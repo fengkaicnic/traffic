@@ -25,8 +25,8 @@ For some wrappers that add message versioning to rpc, see:
     rpc.proxy
 """
 
-from nova.openstack.common import cfg
-from nova.openstack.common import importutils
+from traffic.openstack.common import cfg
+from traffic.openstack.common import importutils
 
 
 rpc_opts = [
@@ -47,13 +47,13 @@ rpc_opts = [
                help='Seconds to wait before a cast expires (TTL). '
                     'Only supported by impl_zmq.'),
     cfg.ListOpt('allowed_rpc_exception_modules',
-                default=['nova.openstack.common.exception',
-                         'nova.exception',
+                default=['traffic.openstack.common.exception',
+                         'traffic.exception',
                          ],
                 help='Modules of exceptions that are permitted to be recreated'
                      'upon receiving exception data from an rpc call.'),
     cfg.StrOpt('control_exchange',
-               default='nova',
+               default='traffic',
                help='AMQP exchange to connect to if using RabbitMQ or Qpid'),
     cfg.BoolOpt('fake_rabbit',
                 default=False,
@@ -67,7 +67,7 @@ def create_connection(new=True):
     """Create a connection to the message bus used for rpc.
 
     For some example usage of creating a connection and some consumers on that
-    connection, see nova.service.
+    connection, see traffic.service.
 
     :param new: Whether or not to create a new connection.  A new connection
                 will be created by default.  If new is False, the
@@ -233,15 +233,15 @@ def queue_get_for(context, topic, host):
     """Get a queue name for a given topic + host.
 
     This function only works if this naming convention is followed on the
-    consumer side, as well.  For example, in nova, every instance of the
-    nova-foo service calls create_consumer() for two topics:
+    consumer side, as well.  For example, in traffic, every instance of the
+    traffic-foo service calls create_consumer() for two topics:
 
         foo
         foo.<host>
 
     Messages sent to the 'foo' topic are distributed to exactly one instance of
-    the nova-foo service.  The services are chosen in a round-robin fashion.
-    Messages sent to the 'foo.<host>' topic are sent to the nova-foo service on
+    the traffic-foo service.  The services are chosen in a round-robin fashion.
+    Messages sent to the 'foo.<host>' topic are sent to the traffic-foo service on
     <host>.
     """
     return '%s.%s' % (topic, host)
@@ -257,8 +257,8 @@ def _get_impl():
         try:
             _RPCIMPL = importutils.import_module(cfg.CONF.rpc_backend)
         except ImportError:
-            # For backwards compatibility with older nova config.
-            impl = cfg.CONF.rpc_backend.replace('nova.rpc',
-                                                'nova.openstack.common.rpc')
+            # For backwards compatibility with older traffic config.
+            impl = cfg.CONF.rpc_backend.replace('traffic.rpc',
+                                                'traffic.openstack.common.rpc')
             _RPCIMPL = importutils.import_module(impl)
     return _RPCIMPL
