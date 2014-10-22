@@ -124,6 +124,14 @@ global_opts = [
     cfg.StrOpt('scheduler_topic',
                default='scheduler',
                help='the topic scheduler nodes listen on'),
+    
+    cfg.StrOpt('host',
+               default=socket.gethostname(),
+               help='Name of this node.  This can be an opaque identifier.  '
+                    'It is not necessarily a hostname, FQDN, or IP address. '
+                    'However, the node name must be valid within '
+                    'an AMQP key, and if using ZeroMQ, a valid '
+                    'hostname, FQDN, or IP address'),
 
     cfg.StrOpt('traffic_api_class',
                 default='traffic.compute.api.API',
