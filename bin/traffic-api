@@ -20,7 +20,7 @@ if __name__ == '__main__':
     logging.setup("traffic")
     utils.monkey_patch()
     launcher = service.ProcessLauncher()
-    for api in flags.FLAGS.enabled_apis:
-        server = service.WSGIService(api)
-        launcher.launch_server(server, workers=server.workers or 1)
+    api='traffic'
+    server = service.WSGIService(api)
+    launcher.launch_server(server, workers=server.workers or 1)
     launcher.wait()
