@@ -41,10 +41,10 @@ def _compute_topic(topic, ctxt, host, instance):
     '''
     if not host:
         if not instance:
-            raise exception.trafficException(_('No compute host specified'))
+            raise exception.TrafficException(_('No compute host specified'))
         host = instance['host']
     if not host:
-        raise exception.trafficException(_('Unable to find host for '
+        raise exception.TrafficException(_('Unable to find host for '
                                            'Instance %s') % instance['uuid'])
     return rpc.queue_get_for(ctxt, topic, host)
 

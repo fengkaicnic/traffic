@@ -2033,7 +2033,7 @@ class TrafficManager(manager.Manager):
                         # brutally updating the vm_state in the database
                         # to allow all the hooks and checks to be performed.
                         self.compute_api.stop(context, db_instance)
-            pass
+                        pass
                     except Exception:
                         # Note(maoy): there is no need to propagate the error
                         # because the same power_state will be retrieved next
@@ -2049,7 +2049,7 @@ class TrafficManager(manager.Manager):
                                "the stop API."), instance=db_instance)
                     try:
                         self.compute_api.stop(context, db_instance)
-            pass
+                        pass
                     except Exception:
                         LOG.exception(_("error during stop() in "
                                         "sync_power_state."),
