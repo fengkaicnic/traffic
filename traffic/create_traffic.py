@@ -9,7 +9,7 @@ def main():
     db = MySQLdb.connect("localhost", username, password, 'nova')
 
     cursor = db.cursor()
-    cursor.execute('drop table if exists tfilter')
+ #   cursor.execute('drop table if exists tfilter')
     tfilter_sql = '''create table tqdisc(
                                         id int not null,
                                         classid int,
@@ -20,7 +20,7 @@ def main():
     
     cursor.execute(tfilter_sql)
     
-    cursor.execute('drop table if exists tqdisc')
+ #   cursor.execute('drop table if exists tqdisc')
     
     tqdisc_sql = '''create table tfilter(
                                           id int not null,
