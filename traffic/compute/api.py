@@ -1976,58 +1976,6 @@ class API(base.Base):
         return self.db.block_device_mapping_get_all_by_instance(context,
                 instance['uuid'])
 
-    def is_volume_backed_instance(self, context, instance, bdms):
-        bdms = bdms or self.get_instance_bdms(context, instance)
-        for bdm in bdms:
-            if (block_device.strip_dev(bdm.device_name) ==
-                block_device.strip_dev(instance['root_device_name'])):
-                return True
-        else:
-            return False
-
-    @check_instance_state(vm_state=[vm_states.ACTIVE])
-    def live_migrate(self, context, instance, block_migration=True,
-                     disk_over_commit=True, host=None):
-    if not FLAGS.block_migration:
-        block_migration = False
-        #add by wyk
-        current_instance_type = instance['instance_type']
-        current_instance_type_name = current_instance_type['name']
-        if current_instance_type['disabled']:
-            raise exception.FlavorNotFound(flavor_id=flavor_id)
-
-        image = self.image_service.show(context, instance['image_ref'])
-        request_spec = {
-                'instance_type': current_instance_type,
-                'instance_uuids': [instance['uuid']],
-                'instance_properties': instance}
-
-        filter_properties = {'ignore_hosts': []}
-        filter_properties['ignore_hosts'].append(instance['host'])
-
-        args = {
-            "instance": instance,
-            "instance_type": current_instance_type,
-            "image": image,
-            "request_spec": jsonutils.to_primitive(request_spec),
-            "filter_properties": filter_properties,
-            "reservations": None,
-        }
-        scheduled_host = self.scheduler_rpcapi.get_host(context, **args).get('host', None)
-        if not host and scheduled_host:
-            host = scheduled_host
-        """Migrate a server lively to a new host."""
-        LOG.debug(_("Going to try to live migrate instance to %s"),
-                  host, instance=instance)
-
-        instance = self.update(context, instance,
-                               task_state=task_states.MIGRATING,
-                               expected_task_state=None)
-
-        self.scheduler_rpcapi.live_migration(context, block_migration,
-                disk_over_commit, instance, host)
-
-
 class HostAPI(base.Base):
     def __init__(self):
         self.compute_rpcapi = compute_rpcapi.ComputeAPI()
