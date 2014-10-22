@@ -56,7 +56,7 @@ FLAGS.register_opts(db_opts)
 IMPL = utils.LazyPluggable('db_backend',
                            sqlalchemy='traffic.db.sqlalchemy.api')
 
-class NoMoreTargets(exception.trafficException):
+class NoMoreTargets(exception.TrafficException):
     """No more available targets"""
     pass
 
