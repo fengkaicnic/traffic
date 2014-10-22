@@ -47,14 +47,14 @@ from eventlet import greenthread
 from eventlet import semaphore
 import netaddr
 
-from nova.common import deprecated
-from nova import exception
-from nova import flags
-from nova.openstack.common import cfg
-from nova.openstack.common import excutils
-from nova.openstack.common import importutils
-from nova.openstack.common import log as logging
-from nova.openstack.common import timeutils
+from traffic.common import deprecated
+from traffic import exception
+from traffic import flags
+from traffic.openstack.common import cfg
+from traffic.openstack.common import excutils
+from traffic.openstack.common import importutils
+from traffic.openstack.common import log as logging
+from traffic.openstack.common import timeutils
 
 
 LOG = logging.getLogger(__name__)
@@ -123,7 +123,7 @@ def execute(*cmd, **kwargs):
     """Helper method to execute command with optional retry.
 
     If you add a run_as_root=True command, don't forget to add the
-    corresponding filter to etc/nova/rootwrap.d !
+    corresponding filter to etc/traffic/rootwrap.d !
 
     :param cmd:                Passed to subprocess.Popen.
     :param process_input:      Send to opened process.
@@ -139,7 +139,7 @@ def execute(*cmd, **kwargs):
                                the command is prefixed by the command specified
                                in the root_helper FLAG.
 
-    :raises exception.NovaException: on receiving unknown arguments
+    :raises exception.TrafficException: on receiving unknown arguments
     :raises exception.ProcessExecutionError:
 
     :returns: a tuple, (stdout, stderr) from the spawned process, or None if
@@ -159,20 +159,20 @@ def execute(*cmd, **kwargs):
     shell = kwargs.pop('shell', False)
 
     if len(kwargs):
-        raise exception.NovaException(_('Got unknown keyword args '
+        raise exception.TrafficException(_('Got unknown keyword args '
                                         'to utils.execute: %r') % kwargs)
 
     if run_as_root:
 
         if FLAGS.rootwrap_config is None or FLAGS.root_helper != 'sudo':
             deprecated.warn(_('The root_helper option (which lets you specify '
-                              'a root wrapper different from nova-rootwrap, '
+                              'a root wrapper different from traffic-rootwrap, '
                               'and defaults to using sudo) is now deprecated. '
                               'You should use the rootwrap_config option '
                               'instead.'))
 
         if (FLAGS.rootwrap_config is not None):
-            cmd = ['sudo', 'nova-rootwrap', FLAGS.rootwrap_config] + list(cmd)
+            cmd = ['sudo', 'traffic-rootwrap', FLAGS.rootwrap_config] + list(cmd)
         else:
             cmd = shlex.split(FLAGS.root_helper) + list(cmd)
     cmd = map(str, cmd)
@@ -252,12 +252,12 @@ def ssh_execute(ssh, cmd, process_input=None,
                 addl_env=None, check_exit_code=True):
     LOG.debug(_('Running cmd (SSH): %s'), ' '.join(cmd))
     if addl_env:
-        raise exception.NovaException(_('Environment not supported over SSH'))
+        raise exception.TrafficException(_('Environment not supported over SSH'))
 
     if process_input:
         # This is (probably) fixable if we need it...
         msg = _('process_input not supported over SSH')
-        raise exception.NovaException(msg)
+        raise exception.TrafficException(msg)
 
     stdin_stream, stdout_stream, stderr_stream = ssh.exec_command(cmd)
     channel = stdout_stream.channel
@@ -285,9 +285,9 @@ def ssh_execute(ssh, cmd, process_input=None,
     return (stdout, stderr)
 
 
-def novadir():
-    import nova
-    return os.path.abspath(nova.__file__).split('nova/__init__.py')[0]
+def trafficdir():
+    import traffic
+    return os.path.abspath(traffic.__file__).split('traffic/__init__.py')[0]
 
 
 def debug(arg):
@@ -451,11 +451,11 @@ def get_my_linklocal(interface):
             return address[0]
         else:
             msg = _('Link Local address is not found.:%s') % if_str
-            raise exception.NovaException(msg)
+            raise exception.TrafficException(msg)
     except Exception as ex:
         msg = _("Couldn't get Link Local IP of %(interface)s"
                 " :%(ex)s") % locals()
-        raise exception.NovaException(msg)
+        raise exception.TrafficException(msg)
 
 
 def parse_mailmap(mailmap='.mailmap'):
@@ -489,7 +489,7 @@ class LazyPluggable(object):
             backend_name = FLAGS[self.__pivot]
             if backend_name not in self.__backends:
                 msg = _('Invalid backend: %s') % backend_name
-                raise exception.NovaException(msg)
+                raise exception.TrafficException(msg)
 
             backend = self.__backends[backend_name]
             if isinstance(backend, tuple):
@@ -743,7 +743,7 @@ def synchronized(name, external=False, lock_path=None):
                     # separators
                     safe_name = name.replace(os.sep, '_')
                     lock_file_path = os.path.join(local_lock_path,
-                                                  'nova-%s' % safe_name)
+                                                  'traffic-%s' % safe_name)
                     try:
                         lock = InterProcessLock(lock_file_path)
                         with lock:
@@ -789,12 +789,12 @@ def get_from_path(items, path):
 
     """
     if path is None:
-        raise exception.NovaException('Invalid mini_xpath')
+        raise exception.TrafficException('Invalid mini_xpath')
 
     (first_token, sep, remainder) = path.partition('/')
 
     if first_token == '':
-        raise exception.NovaException('Invalid mini_xpath')
+        raise exception.TrafficException('Invalid mini_xpath')
 
     results = []
 
@@ -1006,10 +1006,10 @@ def monkey_patch():
     You can set decorators for each modules
     using FLAGS.monkey_patch_modules.
     The format is "Module path:Decorator function".
-    Example: 'nova.api.ec2.cloud:nova.notifier.api.notify_decorator'
+    Example: 'traffic.api.ec2.cloud:traffic.notifier.api.notify_decorator'
 
     Parameters of the decorator is as follows.
-    (See nova.notifier.api.notify_decorator)
+    (See traffic.notifier.api.notify_decorator)
 
     name - name of the function
     function - object of the function
@@ -1211,7 +1211,7 @@ def generate_mac_address():
     #             conflict with libvirt, so we use the next highest octet
     #             that has the unicast and locally administered bits set
     #             properly: 0xfa.
-    #             Discussion: https://bugs.launchpad.net/nova/+bug/921838
+    #             Discussion: https://bugs.launchpad.net/traffic/+bug/921838
     mac = [0xfa, 0x16, 0x3e,
            random.randint(0x00, 0x7f),
            random.randint(0x00, 0xff),
