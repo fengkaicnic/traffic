@@ -120,6 +120,10 @@ global_opts = [
     cfg.BoolOpt('monkey_patch',
                 default=False,
                 help='Whether to log monkey patching'),
+               
+    cfg.StrOpt('scheduler_topic',
+               default='scheduler',
+               help='the topic scheduler nodes listen on'),
 
     cfg.StrOpt('traffic_api_class',
                 default='traffic.compute.api.API',
