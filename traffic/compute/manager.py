@@ -145,7 +145,7 @@ def reverts_task_state(function):
 
 
 
-class TrafficManager(manager.Manager):
+class TrafficManager(manager.SchedulerDependentManager):
     """Manages the running instances from creation to destruction."""
 
     RPC_API_VERSION = '2.2'
