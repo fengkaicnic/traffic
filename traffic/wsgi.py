@@ -30,9 +30,9 @@ import routes.middleware
 import webob.dec
 import webob.exc
 
-from nova import exception
-from nova import flags
-from nova.openstack.common import log as logging
+from traffic import exception
+from traffic import flags
+from traffic.openstack.common import log as logging
 
 
 FLAGS = flags.FLAGS
@@ -55,14 +55,14 @@ class Server(object):
         :param pool_size: Maximum number of eventlets to spawn concurrently.
         :param backlog: Maximum number of queued connections.
         :returns: None
-        :raises: nova.exception.InvalidInput
+        :raises: traffic.exception.InvalidInput
         """
         self.name = name
         self.app = app
         self._server = None
         self._protocol = protocol
         self._pool = eventlet.GreenPool(pool_size or self.default_pool_size)
-        self._logger = logging.getLogger("nova.%s.wsgi.server" % self.name)
+        self._logger = logging.getLogger("traffic.%s.wsgi.server" % self.name)
         self._wsgi_logger = logging.WritableLogger(self._logger)
 
         if backlog < 1:
@@ -134,11 +134,11 @@ class Application(object):
 
             [app:wadl]
             latest_version = 1.3
-            paste.app_factory = nova.api.fancy_api:Wadl.factory
+            paste.app_factory = traffic.api.fancy_api:Wadl.factory
 
         which would result in a call to the `Wadl` class as
 
-            import nova.api.fancy_api
+            import traffic.api.fancy_api
             fancy_api.Wadl(latest_version='1.3')
 
         You could of course re-implement the `factory` method in subclasses,
@@ -206,11 +206,11 @@ class Middleware(Application):
 
             [filter:analytics]
             redis_host = 127.0.0.1
-            paste.filter_factory = nova.api.analytics:Analytics.factory
+            paste.filter_factory = traffic.api.analytics:Analytics.factory
 
         which would result in a call to the `Analytics` class as
 
-            import nova.api.analytics
+            import traffic.api.analytics
             analytics.Analytics(app_from_paste, redis_host='127.0.0.1')
 
         You could of course re-implement the `factory` method in subclasses,
@@ -363,7 +363,7 @@ class Loader(object):
 
         :param name: Name of the application to load.
         :returns: Paste URLMap object wrapping the requested application.
-        :raises: `nova.exception.PasteAppNotFound`
+        :raises: `traffic.exception.PasteAppNotFound`
 
         """
         try:
