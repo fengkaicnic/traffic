@@ -164,9 +164,6 @@ def wrap_instance_fault(function):
 
     return decorated_function
 
-
-
-
 class TrafficManager(manager.Manager):
     """Manages the running instances from creation to destruction."""
 
@@ -556,7 +553,6 @@ class TrafficManager(manager.Manager):
         #             from remote volumes if necessary
         return {'block_device_mapping': block_device_mapping}
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def run_instance(self, context, instance, request_spec=None,
@@ -666,7 +662,6 @@ class TrafficManager(manager.Manager):
         self._notify_about_instance_usage(context, instance, "delete.end",
                 system_metadata=system_meta)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @wrap_instance_fault
     def terminate_instance(self, context, instance):
         """Terminate an instance on this host.  """
@@ -691,7 +686,6 @@ class TrafficManager(manager.Manager):
 
         do_terminate_instance(instance)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def stop_instance(self, context, instance):
@@ -701,7 +695,6 @@ class TrafficManager(manager.Manager):
         self.power_off_instance(context, instance,
                                 final_state=vm_states.STOPPED)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def start_instance(self, context, instance):
@@ -710,7 +703,6 @@ class TrafficManager(manager.Manager):
         Alias for power_on_instance for compatibility"""
         self.power_on_instance(context, instance)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def power_off_instance(self, context, instance,
@@ -728,7 +720,6 @@ class TrafficManager(manager.Manager):
                               task_state=None)
         self._notify_about_instance_usage(context, instance, "power_off.end")
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def power_on_instance(self, context, instance):
@@ -745,7 +736,6 @@ class TrafficManager(manager.Manager):
                                                    task_states.STARTING))
         self._notify_about_instance_usage(context, instance, "power_on.end")
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def rebuild_instance(self, context, instance, orig_image_ref, image_ref,
@@ -835,7 +825,6 @@ class TrafficManager(manager.Manager):
                     network_info=network_info,
                     extra_usage_info=extra_usage_info)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def reboot_instance(self, context, instance, reboot_type="SOFT"):
@@ -881,7 +870,6 @@ class TrafficManager(manager.Manager):
 
         self._notify_about_instance_usage(context, instance, "reboot.end")
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def snapshot_instance(self, context, image_id, instance,
@@ -941,9 +929,6 @@ class TrafficManager(manager.Manager):
         self._notify_about_instance_usage(
                 context, instance, "snapshot.end")
 
-
-
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @wrap_instance_fault
     def confirm_resize(self, context, migration_id, instance,
                        reservations=None):
@@ -969,15 +954,6 @@ class TrafficManager(manager.Manager):
 
             self._quota_commit(context, reservations)
 
-
-
-    
-
-
-
-
-
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def prep_resize(self, context, image, instance, instance_type,
@@ -1028,8 +1004,6 @@ class TrafficManager(manager.Manager):
                 context, instance, "resize.prep.end",
                 extra_usage_info=extra_usage_info)
 
-   
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @wrap_instance_fault
     def get_diagnostics(self, context, instance):
         """Retrieve diagnostics for an instance on this host."""
@@ -1039,7 +1013,6 @@ class TrafficManager(manager.Manager):
                       instance=instance)
             return self.driver.get_diagnostics(instance)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def suspend_instance(self, context, instance):
@@ -1059,7 +1032,6 @@ class TrafficManager(manager.Manager):
 
         self._notify_about_instance_usage(context, instance, 'suspend')
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def resume_instance(self, context, instance):
@@ -1101,7 +1073,6 @@ class TrafficManager(manager.Manager):
         """Inject network info, but don't return the info."""
         self._inject_network_info(context, instance)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @wrap_instance_fault
     def get_console_output(self, context, instance, tail_length=None):
         """Send the console output for the given instance."""
@@ -1126,7 +1097,6 @@ class TrafficManager(manager.Manager):
         else:
             return '\n'.join(log.split('\n')[-int(length):])
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @wrap_instance_fault
     def get_vnc_console(self, context, console_type, instance):
         """Return connection information for a vnc console."""
@@ -1168,7 +1138,6 @@ class TrafficManager(manager.Manager):
         self.volume_api.attach(context, volume, instance_uuid, mountpoint)
         return connection_info
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def reserve_block_device_name(self, context, instance, device):
@@ -1238,7 +1207,6 @@ class TrafficManager(manager.Manager):
                         context, instance['uuid'], True)
         return True
  
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def attach_volume(self, context, volume_id, mountpoint, instance):
@@ -1330,7 +1298,6 @@ class TrafficManager(manager.Manager):
                 volume = self.volume_api.get(context, volume_id)
                 self.volume_api.roll_detaching(context, volume)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     @reverts_task_state
     @wrap_instance_fault
     def detach_volume(self, context, volume_id, instance):
@@ -1345,7 +1312,6 @@ class TrafficManager(manager.Manager):
         self.db.block_device_mapping_destroy_by_instance_and_volume(
             context, instance['uuid'], volume_id)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     def remove_volume_connection(self, context, volume_id, instance):
         """Remove a volume connection using the volume api"""
         # NOTE(vish): We don't want to actually mark the volume
@@ -1362,7 +1328,6 @@ class TrafficManager(manager.Manager):
         except exception.NotFound:
             pass
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     def check_can_live_migrate_destination(self, ctxt, instance,
                                            block_migration=False,
                                            disk_over_commit=False):
@@ -1390,7 +1355,6 @@ class TrafficManager(manager.Manager):
         if dest_check_data and 'migrate_data' in dest_check_data:
             return dest_check_data['migrate_data']
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     def check_can_live_migrate_source(self, ctxt, instance, dest_check_data):
         """Check if it is possible to execute live migration.
 
@@ -2142,7 +2106,6 @@ class TrafficManager(manager.Manager):
                 LOG.error(msg % error, instance_uuid=instance_uuid)
                 self._set_instance_error_state(context, instance_uuid)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     def add_aggregate_host(self, context, aggregate_id, host, slave_info=None):
         """Notify hypervisor of change (for hypervisor pools)."""
         aggregate = self.db.aggregate_get(context, aggregate_id)
@@ -2155,7 +2118,6 @@ class TrafficManager(manager.Manager):
                                                self.db.aggregate_host_delete,
                                                aggregate.id, host)
 
-    @exception.wrap_exception(notifier=notifier, publisher_id=publisher_id())
     def remove_aggregate_host(self, context, aggregate_id,
                               host, slave_info=None):
         """Removes a host from a physical hypervisor pool."""
