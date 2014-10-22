@@ -44,23 +44,12 @@ import traceback
 
 from eventlet import greenthread
 
-from traffic import block_device
 from traffic import compute
-from traffic.compute import instance_types
-from traffic.compute import power_state
-from traffic.compute import resource_tracker
 from traffic.compute import rpcapi as compute_rpcapi
-from traffic.compute import task_states
-from traffic.compute import utils as compute_utils
-from traffic.compute import vm_states
 import traffic.context
 from traffic import exception
 from traffic import flags
-from traffic.image import glance
 from traffic import manager
-from traffic import network
-from traffic.network import model as network_model
-from traffic import notifications
 from traffic.openstack.common import cfg
 from traffic.openstack.common import excutils
 from traffic.openstack.common import importutils
@@ -71,11 +60,10 @@ from traffic.openstack.common import rpc
 from traffic.openstack.common.rpc import common as rpc_common
 from traffic.openstack.common.rpc import dispatcher as rpc_dispatcher
 from traffic.openstack.common import timeutils
-from traffic import quota
+
 from traffic.scheduler import rpcapi as scheduler_rpcapi
 from traffic import utils
-from traffic.virt import driver
-from traffic import volume
+
 
 
 compute_opts = [
@@ -123,8 +111,6 @@ compute_opts = [
 
 FLAGS = flags.FLAGS
 FLAGS.register_opts(compute_opts)
-
-QUOTAS = quota.QUOTAS
 
 LOG = logging.getLogger(__name__)
 
@@ -179,16 +165,6 @@ def wrap_instance_fault(function):
     return decorated_function
 
 
-def _get_image_meta(context, image_ref):
-    image_service, image_id = glance.get_remote_image_service(context,
-                                                              image_ref)
-    return image_service.show(context, image_id)
-
-# Add by YANGYUAN to fetch detail info from glance
-def _get_image_service(context, image_ref):
-    image_service, image_id = glance.get_remote_image_service(context,
-                                                              image_ref)
-    return image_service
 
 
 class TrafficManager(manager.Manager):
@@ -207,35 +183,6 @@ class TrafficManager(manager.Manager):
         #for each compute node, exists a resource_tracker
         self._resource_tracker_dict = {}
       
-    def _get_resource_tracker(self, nodename):
-        rt = self._resource_tracker_dict.get(nodename)
-        if not rt:
-            rt = resource_tracker.ResourceTracker(self.host,#compute service host
-                                                  self.driver,#specific driver
-                                                  nodename)
-            self._resource_tracker_dict[nodename] = rt
-        return rt
-
-    def _instance_update(self, context, instance_uuid, **kwargs):
-        """Update an instance in the database using kwargs as value."""
-
-        (old_ref, instance_ref) = self.db.instance_update_and_get_original(
-                context, instance_uuid, kwargs)
-        rt = self._get_resource_tracker(instance_ref.get('node'))
-        rt.update_usage(context, instance_ref)
-        notifications.send_update(context, old_ref, instance_ref)
-
-        return instance_ref
-
-    def _set_instance_error_state(self, context, instance_uuid):
-        try:
-            LOG.debug(_('Instance set it to ERROR'),instance_uuid=instance_uuid)
-            self._instance_update(context, instance_uuid,
-                                  vm_state=vm_states.ERROR)
-        except exception.InstanceNotFound:
-            LOG.debug(_('Instance has been destroyed from under us while '
-                        'trying to set it to ERROR'),
-                      instance_uuid=instance_uuid)
 
     def init_host(self):
         """Initialization for a standalone compute service."""

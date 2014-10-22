@@ -735,7 +735,7 @@ def tfilter_get_last_handle(context):
 def tfilter_create(context, values, session=None):
     if not session:
         session = get_session()
-    with session.begin(): 
+    with session.begin():
         tfilter_ref = models.Tfilter()
         tfilter_ref.update(values)
         tfilter_ref.save(session=session)

@@ -10,7 +10,7 @@ def main():
 
     cursor = db.cursor()
  #   cursor.execute('drop table if exists tfilter')
-    tfilter_sql = '''create table tqdisc(
+    tfilter_sql = '''create table tfilter(
                                         id int not null,
                                         classid int,
                                         handle int,
@@ -22,7 +22,7 @@ def main():
     
  #   cursor.execute('drop table if exists tqdisc')
     
-    tqdisc_sql = '''create table tfilter(
+    tqdisc_sql = '''create table tqdisc(
                                           id int not null,
                                           instanceid varchar(50),
                                           classid varchar(20),
