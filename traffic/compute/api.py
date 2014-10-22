@@ -31,46 +31,42 @@ from traffic.openstack.common import cfg
 
 class API(base.Base):
     
-        def __init__(self, image_service=None, tqdisc_api=None, tfilter_api=None,
+    def __init__(self, image_service=None, tqdisc_api=None, tfilter_api=None,
                      **kwargs):
+        self.scheduler_rpcapi = scheduler_rpcapi.SchedulerAPI()
+        self.compute_rpcapi = compute_rpcapi.ComputeAPI()
+        self.tqdisc_api = tqdisc_api or tqdisc.API()
+        self.tfilter_api = tfilter_api or tfilter.API()
+            
+        super(API, self).__init__(**kwargs)
 
-            self.scheduler_rpcapi = scheduler_rpcapi.SchedulerAPI()
-            self.compute_rpcapi = compute_rpcapi.ComputeAPI()
-            self.tqdisc_api = tqdisc_api or tqdisc.API()
-            self.tfilter_api = tfilter_api or tfilter.API()
+         
+    def create(self, context, ip, instance_id, band, prio):
+#         compute_rpcapi.create_traffic(context, ip, instance_id, band, prio)
+        self.compute_rpcapi.create_traffic(context, ip, instance_id, band, prio)
+        
+    def show(self, context, instance_id):
+        result = self.tqdisc_api.get_by_instance_id(context, instance_id)
+        return result["band"]
+        
+    def get_by_ip(self, context, ip):
+        tfilter = self.tfilter_api.get_by_ip(context, ip)
+        result = self.tqdisc_api.get_by_classid(context, tfilter["flow_id"])
+        return result["band"]
+        
+    def delete(self, context, instance_id):
+        result = self.tqdisc_api.get_by_instance_id(context, instance_id)
+        self.tqdisc_api.delete(context, result["classid"])
+        tfilter = self.tfilter_api.get(context, result["classid"])
+        self.tfilter_api.delete(context, tfilter["handle"], tfilter['prio'])
             
-            super(API, self).__init__(**kwargs)
+    def delete_by_ip(self, context, ip):
+        result = self.tqdisc_api.get_by_ip(context, ip)
+        self.tqdisc_api.delete_by_ip(context, result['classid'])
+        tfilter = self.tfilter_api.get(context, result['classid'])
+        self.tfilter_api.delete(context, tfilter['handle'], tfilter['prio'])
         
-'''        def create(self, context, ip, instance_id, band, prio=1):
-            class_id = self.tqdisc_api.create(context, instance_id, band, prio)
-            self.tfilter.create(context, ip, class_id, prio)'''
-            
-      
-        def create(self, context, ip, instance_id, band, prio):
-            compute_rpcapi.run_traffic(context, ip, instance_id, band, prio) 
-        
-        def show(self, context, instance_id):
-            result = self.tqdisc_api.get_by_instance_id(context, instance_id)
-            return result["band"]
-        
-        def get_by_ip(self, context, ip):
-            tfilter = self.tfilter_api.get_by_ip(context, ip)
-            result = self.tqdisc_api.get_by_classid(context, tfilter["flow_id"])
-            return result["band"]
-        
-        def delete(self, context, instance_id):
-            result = self.tqdisc_api.get_by_instance_id(context, instance_id)
-            self.tqdisc_api.delete(context, result["classid"])
-            tfilter = self.tfilter_api.get(context, result["classid"])
-            self.tfilter_api.delete(context, tfilter["handle"], tfilter['prio'])
-            
-        def delete_by_ip(self, context, ip):
-            result = self.tqdisc_api.get_by_ip(context, ip)
-            self.tqdisc_api.delete_by_ip(context, result['classid'])
-            tfilter = self.tfilter_api.get(context, result['classid'])
-            self.tfilter_api.delete(context, tfilter['handle'], tfilter['prio'])
-        
-        def update(self, context, server_id, band):
-            self.delete(context, server_id)
-            self.create(context, server_id, band)
+    def update(self, context, server_id, band):
+        self.delete(context, server_id)
+        self.create(context, server_id, band)
             

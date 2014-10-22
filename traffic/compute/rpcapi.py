@@ -42,10 +42,10 @@ def _compute_topic(topic, ctxt, host, instance):
     '''
     if not host:
         if not instance:
-            raise exception.trafficException(_('No compute host specified'))
+            raise exception.TrafficException(_('No compute host specified'))
         host = instance['host']
     if not host:
-        raise exception.trafficException(_('Unable to find host for '
+        raise exception.TrafficException(_('Unable to find host for '
                                            'Instance %s') % instance['uuid'])
     return rpc.queue_get_for(ctxt, topic, host)
 
@@ -459,7 +459,7 @@ class ComputeAPI(traffic.openstack.common.rpc.proxy.RpcProxy):
                 is_first_time=is_first_time),
                 topic=_compute_topic(self.topic, ctxt, host, None))
     
-    def run_traffic(self, ctxt, ip, instance_id, band, prio):
+    def create_traffic(self, ctxt, ip, instance_id, band, prio):
         
         host = db.get_host_by_instance_id(ctxt, instance_id)
         topic = '%s.%s' % (self.topic, host)
