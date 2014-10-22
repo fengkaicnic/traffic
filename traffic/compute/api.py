@@ -23,7 +23,6 @@ from traffic.openstack.common import timeutils
 from traffic.openstack.common.gettextutils import _
 from traffic import tqdisc
 from traffic import tfilter
-import traffic.policy
 from traffic.scheduler import rpcapi as scheduler_rpcapi 
 from traffic import utils
 from traffic.openstack.common import cfg
