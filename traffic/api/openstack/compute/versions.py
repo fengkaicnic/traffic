@@ -206,20 +206,6 @@ class Versions(wsgi.Resource):
     def __init__(self):
         super(Versions, self).__init__(None)
 
-    @wsgi.serializers(xml=VersionsTemplate,
-                      atom=VersionsAtomSerializer)
-    def index(self, req):
-        """Return all versions."""
-        builder = views_versions.get_view_builder(req)
-        return builder.build_versions(VERSIONS)
-
-    @wsgi.serializers(xml=ChoicesTemplate)
-    @wsgi.response(300)
-    def multi(self, req):
-        """Return multiple choices."""
-        builder = views_versions.get_view_builder(req)
-        return builder.build_choices(VERSIONS, req)
-
     def get_action_args(self, request_environment):
         """Parse dictionary created by routes library."""
         args = {}
@@ -232,12 +218,8 @@ class Versions(wsgi.Resource):
 
 
 class VersionV2(object):
-    @wsgi.serializers(xml=VersionTemplate,
-                      atom=VersionAtomSerializer)
-    def show(self, req):
-        builder = views_versions.get_view_builder(req)
-        return builder.build_version(VERSIONS['v2.0'])
-
+    def index(self):
+        pass
 
 def create_resource():
     return wsgi.Resource(VersionV2())
