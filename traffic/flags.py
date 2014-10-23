@@ -116,7 +116,11 @@ global_opts = [
                default=None,
                help='Path to the rootwrap configuration file to use for '
                     'running commands as root'),
-
+    cfg.MultiStrOpt('osapi_compute_extension',
+                    default=[
+                      'nova.api.openstack.compute.contrib.standard_extensions'
+                      ],
+                    help='osapi compute extension to load'),
     cfg.BoolOpt('monkey_patch',
                 default=False,
                 help='Whether to log monkey patching'),
