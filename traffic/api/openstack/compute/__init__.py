@@ -22,7 +22,7 @@ WSGI middleware for OpenStack Compute API.
 
 import traffic.api.openstack 
 from traffic.api.openstack.compute import extensions
-from traffic.api.openstack.compute import versions 
+from traffic.api.openstack.compute import versions
 from traffic import flags
 from traffic.openstack.common import cfg
 from traffic.openstack.common import log as logging
