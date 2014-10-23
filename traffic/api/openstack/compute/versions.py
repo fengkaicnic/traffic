@@ -17,10 +17,10 @@
 
 from lxml import etree
 
-from nova.api.openstack.compute.views import versions as views_versions
-from nova.api.openstack import wsgi
-from nova.api.openstack import xmlutil
-from nova.openstack.common import timeutils
+from traffic.api.openstack.compute.views import versions as views_versions
+from traffic.api.openstack import wsgi
+from traffic.api.openstack import xmlutil
+from traffic.openstack.common import timeutils
 
 
 LINKS = {

@@ -19,7 +19,7 @@ import os.path
 
 from lxml import etree
 
-from nova import utils
+from traffic import utils
 
 
 XMLNS_V10 = 'http://docs.rackspacecloud.com/servers/api/v1.0'

@@ -23,91 +23,21 @@ import urlparse
 import webob
 from xml.dom import minidom
 
-from nova.api.openstack import wsgi
-from nova.api.openstack import xmlutil
-from nova.compute import task_states
-from nova.compute import utils as compute_utils
-from nova.compute import vm_states
-from nova import exception
-from nova import flags
-from nova.openstack.common import log as logging
-from nova import quota
+from traffic.api.openstack import wsgi
+from traffic.api.openstack import xmlutil
+from traffic.compute import utils as compute_utils 
+from traffic import exception
+from traffic import flags
+from traffic.openstack.common import log as logging
 
 
 LOG = logging.getLogger(__name__)
 FLAGS = flags.FLAGS
-QUOTAS = quota.QUOTAS
 
 
 XML_NS_V11 = 'http://docs.openstack.org/compute/api/v1.1'
 
 
-_STATE_MAP = {
-    vm_states.ACTIVE: {
-        'default': 'ACTIVE',
-        task_states.REBOOTING: 'REBOOT',
-        task_states.REBOOTING_HARD: 'HARD_REBOOT',
-        task_states.UPDATING_PASSWORD: 'PASSWORD',
-        task_states.REBUILDING: 'REBUILD',
-        task_states.REBUILD_BLOCK_DEVICE_MAPPING: 'REBUILD',
-        task_states.REBUILD_SPAWNING: 'REBUILD',
-        task_states.MIGRATING: 'MIGRATING',
-        task_states.RESIZE_PREP: 'RESIZE',
-        task_states.RESIZE_MIGRATING: 'RESIZE',
-        task_states.RESIZE_MIGRATED: 'RESIZE',
-        task_states.RESIZE_FINISH: 'RESIZE',
-    },
-    vm_states.BUILDING: {
-        'default': 'BUILD',
-    },
-    vm_states.STOPPED: {
-        'default': 'SHUTOFF',
-    },
-    vm_states.RESIZED: {
-        'default': 'VERIFY_RESIZE',
-        # Note(maoy): the OS API spec 1.1 doesn't have CONFIRMING_RESIZE
-        # state so we comment that out for future reference only.
-        #task_states.RESIZE_CONFIRMING: 'CONFIRMING_RESIZE',
-        task_states.RESIZE_REVERTING: 'REVERT_RESIZE',
-    },
-    vm_states.PAUSED: {
-        'default': 'PAUSED',
-    },
-    vm_states.SUSPENDED: {
-        'default': 'SUSPENDED',
-    },
-    vm_states.RESCUED: {
-        'default': 'RESCUE',
-    },
-    vm_states.ERROR: {
-        'default': 'ERROR',
-    },
-    vm_states.DELETED: {
-        'default': 'DELETED',
-    },
-    vm_states.SOFT_DELETED: {
-        'default': 'DELETED',
-    },
-}
-
-
-def status_from_state(vm_state, task_state='default'):
-    """Given vm_state and task_state, return a status string."""
-    task_map = _STATE_MAP.get(vm_state, dict(default='UNKNOWN'))
-    status = task_map.get(task_state, task_map['default'])
-    if status == "UNKNOWN":
-        LOG.error(_("status is UNKNOWN from vm_state=%(vm_state)s "
-                    "task_state=%(task_state)s. Bad upgrade or db "
-                    "corrupted?") % locals())
-    return status
-
-
-def vm_state_from_status(status):
-    """Map the server status string to a vm state."""
-    for state, task_map in _STATE_MAP.iteritems():
-        status_string = task_map.get("default")
-        if status.lower() == status_string.lower():
-            return state
 
 
 def get_pagination_params(request):
@@ -255,11 +185,11 @@ def get_id_from_href(href):
 def remove_version_from_href(href):
     """Removes the first api version from the href.
 
-    Given: 'http://www.nova.com/v1.1/123'
-    Returns: 'http://www.nova.com/123'
+    Given: 'http://www.traffic.com/v1.1/123'
+    Returns: 'http://www.traffic.com/123'
 
-    Given: 'http://www.nova.com/v1.1'
-    Returns: 'http://www.nova.com'
+    Given: 'http://www.traffic.com/v1.1'
+    Returns: 'http://www.traffic.com'
 
     """
     parsed_url = urlparse.urlsplit(href)
@@ -280,31 +210,6 @@ def remove_version_from_href(href):
     parsed_url = list(parsed_url)
     parsed_url[2] = new_path
     return urlparse.urlunsplit(parsed_url)
-
-
-def check_img_metadata_properties_quota(context, metadata):
-    if metadata is None:
-        return
-    try:
-        QUOTAS.limit_check(context, metadata_items=len(metadata))
-    except exception.OverQuota:
-        expl = _("Image metadata limit exceeded")
-        raise webob.exc.HTTPRequestEntityTooLarge(explanation=expl,
-                                                headers={'Retry-After': 0})
-
-    #  check the key length.
-    if isinstance(metadata, dict):
-        for key, value in metadata.iteritems():
-            if len(key) == 0:
-                expl = _("Image metadata key cannot be blank")
-                raise webob.exc.HTTPBadRequest(explanation=expl)
-            if len(key) > 255:
-                expl = _("Image metadata key too long")
-                raise webob.exc.HTTPBadRequest(explanation=expl)
-    else:
-        expl = _("Invalid image metadata")
-        raise webob.exc.HTTPBadRequest(explanation=expl)
-
 
 def dict_to_query_str(params):
     # TODO(throughnothing): we should just use urllib.urlencode instead of this
@@ -328,22 +233,6 @@ def get_networks_for_instance_from_nw_info(nw_info):
         networks[label]['ips'].extend(ips)
         networks[label]['floating_ips'].extend(floaters)
     return networks
-
-
-def get_networks_for_instance(context, instance):
-    """Returns a prepared nw_info list for passing into the view builders
-
-    We end up with a data structure like::
-
-        {'public': {'ips': [{'addr': '10.0.0.1', 'version': 4},
-                            {'addr': '2001::1', 'version': 6}],
-                    'floating_ips': [{'addr': '172.16.0.1', 'version': 4},
-                                     {'addr': '172.16.2.1', 'version': 4}]},
-         ...}
-    """
-    nw_info = compute_utils.get_nw_info_for_instance(instance)
-    return get_networks_for_instance_from_nw_info(nw_info)
-
 
 def raise_http_conflict_for_instance_invalid_state(exc, action):
     """Return a webob.exc.HTTPConflict instance containing a message
@@ -466,7 +355,7 @@ class ViewBuilder(object):
         prefix = self._update_link_prefix(request.application_url,
                                           FLAGS.osapi_compute_link_prefix)
         url = os.path.join(prefix,
-                           request.environ["nova.context"].project_id,
+                           request.environ["traffic.context"].project_id,
                            collection_name)
         return "%s?%s" % (url, dict_to_query_str(params))
 
@@ -475,7 +364,7 @@ class ViewBuilder(object):
         prefix = self._update_link_prefix(request.application_url,
                                           FLAGS.osapi_compute_link_prefix)
         return os.path.join(prefix,
-                            request.environ["nova.context"].project_id,
+                            request.environ["traffic.context"].project_id,
                             collection_name,
                             str(identifier))
 
@@ -485,7 +374,7 @@ class ViewBuilder(object):
         base_url = self._update_link_prefix(base_url,
                                             FLAGS.osapi_compute_link_prefix)
         return os.path.join(base_url,
-                            request.environ["nova.context"].project_id,
+                            request.environ["traffic.context"].project_id,
                             collection_name,
                             str(identifier))
 
