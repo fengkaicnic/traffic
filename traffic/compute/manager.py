@@ -306,7 +306,6 @@ class TrafficManager(manager.SchedulerDependentManager):
         #             from remote volumes if necessary
         return {'block_device_mapping': block_device_mapping}
 
-    @reverts_task_state
 
     def run_instance(self, context, instance, request_spec=None,
                      filter_properties=None, requested_networks=None,
@@ -361,7 +360,6 @@ class TrafficManager(manager.SchedulerDependentManager):
 
         do_terminate_instance(instance)
 
-    @reverts_task_state
     def start_instance(self, context, instance):
         """Starting an instance on this host.
 
@@ -392,9 +390,6 @@ class TrafficManager(manager.SchedulerDependentManager):
 
             self._quota_commit(context, reservations)
 
- 
-
-    @reverts_task_state
     def reset_network(self, context, instance):
         """Reset networking on the given instance."""
         LOG.debug(_('Reset network'), context=context, instance=instance)
@@ -508,7 +503,6 @@ class TrafficManager(manager.SchedulerDependentManager):
                         context, instance['uuid'], True)
         return True
  
-    @reverts_task_state
     def attach_volume(self, context, volume_id, mountpoint, instance):
         """Attach a volume to an instance."""
         try:
@@ -598,7 +592,6 @@ class TrafficManager(manager.SchedulerDependentManager):
                 volume = self.volume_api.get(context, volume_id)
                 self.volume_api.roll_detaching(context, volume)
 
-    @reverts_task_state
     def detach_volume(self, context, volume_id, instance):
         """Detach a volume from an instance."""
         bdm = self._get_instance_volume_bdm(context, instance['uuid'],

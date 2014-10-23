@@ -24,10 +24,10 @@ from xml.parsers import expat
 from lxml import etree
 import webob
 
-from nova import exception
-from nova.openstack.common import jsonutils
-from nova.openstack.common import log as logging
-from nova import wsgi
+from traffic import exception
+from traffic.openstack.common import jsonutils
+from traffic.openstack.common import log as logging
+from traffic import wsgi
 
 
 XMLNS_V10 = 'http://docs.rackspacecloud.com/servers/api/v1.0'
@@ -125,7 +125,7 @@ class Request(webob.Request):
 
     def best_match_content_type(self):
         """Determine the requested response content-type."""
-        if 'nova.best_content_type' not in self.environ:
+        if 'traffic.best_content_type' not in self.environ:
             # Calculate the best MIME type
             content_type = None
 
@@ -139,10 +139,10 @@ class Request(webob.Request):
             if not content_type:
                 content_type = self.accept.best_match(SUPPORTED_CONTENT_TYPES)
 
-            self.environ['nova.best_content_type'] = (content_type or
+            self.environ['traffic.best_content_type'] = (content_type or
                                                       'application/json')
 
-        return self.environ['nova.best_content_type']
+        return self.environ['traffic.best_content_type']
 
     def get_content_type(self):
         """Determine content type of the request body.
@@ -918,7 +918,7 @@ class Resource(wsgi.Application):
         action_args.update(contents)
 
         project_id = action_args.pop("project_id", None)
-        context = request.environ.get('nova.context')
+        context = request.environ.get('traffic.context')
         if (context and project_id and (project_id != context.project_id)):
             msg = _("Malformed request url")
             return Fault(webob.exc.HTTPBadRequest(explanation=msg))
@@ -1236,6 +1236,6 @@ class OverLimitFault(webob.exc.HTTPException):
 
 
 def _set_request_id_header(req, headers):
-    context = req.environ.get('nova.context')
+    context = req.environ.get('traffic.context')
     if context:
         headers['x-compute-request-id'] = context.request_id

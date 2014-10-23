@@ -94,79 +94,11 @@ def _get_marker_param(request):
     return request.GET['marker']
 
 
-def limited(items, request, max_limit=FLAGS.osapi_max_limit):
-    """Return a slice of items according to requested offset and limit.
-
-    :param items: A sliceable entity
-    :param request: ``wsgi.Request`` possibly containing 'offset' and 'limit'
-                    GET variables. 'offset' is where to start in the list,
-                    and 'limit' is the maximum number of items to return. If
-                    'limit' is not specified, 0, or > max_limit, we default
-                    to max_limit. Negative values for either offset or limit
-                    will cause exc.HTTPBadRequest() exceptions to be raised.
-    :kwarg max_limit: The maximum number of items to return from 'items'
-    """
-    try:
-        offset = int(request.GET.get('offset', 0))
-    except ValueError:
-        msg = _('offset param must be an integer')
-        raise webob.exc.HTTPBadRequest(explanation=msg)
-
-    try:
-        limit = int(request.GET.get('limit', max_limit))
-    except ValueError:
-        msg = _('limit param must be an integer')
-        raise webob.exc.HTTPBadRequest(explanation=msg)
-
-    if limit < 0:
-        msg = _('limit param must be positive')
-        raise webob.exc.HTTPBadRequest(explanation=msg)
-
-    if offset < 0:
-        msg = _('offset param must be positive')
-        raise webob.exc.HTTPBadRequest(explanation=msg)
-
-    limit = min(max_limit, limit or max_limit)
-    range_end = offset + limit
-    return items[offset:range_end]
-
-
-def get_limit_and_marker(request, max_limit=FLAGS.osapi_max_limit):
-    """get limited parameter from request"""
-    params = get_pagination_params(request)
-    limit = params.get('limit', max_limit)
-    limit = min(max_limit, limit)
-    marker = params.get('marker')
-
-    return limit, marker
-
 #added by weiyuanke@cnic.cn
 def get_page_index(request):
     params = get_pagination_params(request)
     page_index = params.get('page_index')
     return page_index
-
-def limited_by_marker(items, request, max_limit=FLAGS.osapi_max_limit):
-    """Return a slice of items according to the requested marker and limit."""
-    limit, marker = get_limit_and_marker(request, max_limit)
-
-    limit = min(max_limit, limit)
-    start_index = 0
-    if marker:
-        start_index = -1
-        for i, item in enumerate(items):
-            if 'flavorid' in item:
-                if item['flavorid'] == marker:
-                    start_index = i + 1
-                    break
-            elif item['id'] == marker or item.get('uuid') == marker:
-                start_index = i + 1
-                break
-        if start_index < 0:
-            msg = _('marker [%s] not found') % marker
-            raise webob.exc.HTTPBadRequest(explanation=msg)
-    range_end = start_index + limit
-    return items[start_index:range_end]
 
 
 def get_id_from_href(href):
