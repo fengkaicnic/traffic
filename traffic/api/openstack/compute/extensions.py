@@ -19,11 +19,12 @@ from traffic.api.openstack import extensions as base_extensions
 from traffic import flags
 from traffic.openstack.common import log as logging
 from traffic.openstack.common.plugin import pluginmanager
-
+from gettext import gettext
 
 LOG = logging.getLogger(__name__)
 FLAGS = flags.FLAGS
 
+_ = gettext
 
 class ExtensionManager(base_extensions.ExtensionManager):
     def __init__(self):

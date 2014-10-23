@@ -25,6 +25,7 @@ import traffic.api.openstack
 from traffic.api.openstack import wsgi
 from traffic.api.openstack import xmlutil
 from traffic import exception
+from traffic.openstack.common.gettextutils import _
 from traffic import flags
 from traffic.openstack.common import importutils
 from traffic.openstack.common import log as logging
