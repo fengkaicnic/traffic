@@ -39,7 +39,7 @@ FLAGS = cfg.CONF
 def parse_args(argv, default_config_files=None):
     FLAGS.disable_interspersed_args()
     return argv[:1] + FLAGS(argv[1:],
-                            project='nova',
+                            project='traffic',
                             default_config_files=default_config_files)
 
 
@@ -84,7 +84,7 @@ core_opts = [
                     'database'),
     cfg.StrOpt('api_paste_config',
                default="api-paste.ini",
-               help='File name for the paste.deploy config for nova-api'),
+               help='File name for the paste.deploy config for traffic-api'),
     ]
 
 debug_opts = [

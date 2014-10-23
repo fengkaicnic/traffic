@@ -30,7 +30,7 @@ from traffic.openstack.common.gettextutils import _
 matchmaker_opts = [
     # Matchmaker ring file
     cfg.StrOpt('matchmaker_ringfile',
-               default='/etc/nova/matchmaker_ring.json',
+               default='/etc/traffic/matchmaker_ring.json',
                help='Matchmaker ring file (JSON)'),
 ]
 
