@@ -20,7 +20,7 @@
 WSGI middleware for OpenStack Compute API.
 """
 
-import traffic.api.openstack
+import traffic.api.openstack 
 from traffic.api.openstack.compute import extensions
 from traffic.api.openstack.compute import versions 
 from traffic import flags
@@ -28,7 +28,7 @@ from traffic.openstack.common import cfg
 from traffic.openstack.common import log as logging
 from traffic.api.openstack.compute import tfilter
 from traffic.api.openstack.compute import tqdisc
-
+from traffic.api.openstack.compute import trafficapi
 
 LOG = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ class APIRouter(traffic.api.openstack.APIRouter):
                         collection={'detail':'GET'},
                         member={'action':'POST'})
         
-        self.resources['traffic'] = traffic.create_resource()
+        self.resources['traffic'] = trafficapi.create_resource()
         mapper.resource("traffic", "traffic",
                         controller=self.resources['traffic'],
                         collection={'detail':'GET'},
