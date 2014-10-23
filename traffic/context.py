@@ -17,15 +17,15 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""RequestContext: context for requests that persist through all of nova."""
+"""RequestContext: context for requests that persist through all of traffic."""
 
 import copy
 
-from nova.openstack.common import local
-from nova.openstack.common import log as logging
-from nova.openstack.common import timeutils
-from nova import policy
-from nova import utils
+from traffic.openstack.common import local
+from traffic.openstack.common import log as logging
+from traffic.openstack.common import timeutils
+from traffic import policy
+from traffic import utils
 
 
 LOG = logging.getLogger(__name__)

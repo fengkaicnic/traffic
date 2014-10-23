@@ -19,11 +19,11 @@
 
 import os.path
 
-from nova import exception
-from nova import flags
-from nova.openstack.common import cfg
-from nova.openstack.common import policy
-from nova import utils
+from traffic import exception
+from traffic import flags
+from traffic.openstack.common import cfg
+from traffic.openstack.common import policy
+from traffic import utils
 
 
 policy_opts = [
@@ -71,7 +71,7 @@ def _set_brain(data):
 def enforce(context, action, target):
     """Verifies that the action is valid on the target in this context.
 
-       :param context: nova context
+       :param context: traffic context
        :param action: string representing the action to be checked
            this should be colon separated for clarity.
            i.e. ``compute:create_instance``,
@@ -82,7 +82,7 @@ def enforce(context, action, target):
            for object creation this should be a dictionary representing the
            location of the object e.g. ``{'project_id': context.project_id}``
 
-       :raises nova.exception.PolicyNotAllowed: if verification fails.
+       :raises traffic.exception.PolicyNotAllowed: if verification fails.
 
     """
     init()
