@@ -27,7 +27,7 @@ import gettext
 import os
 
 path = os.path.dirname(os.path.abspath(__file__)) + "/../../locale"
-t = gettext.translation('nova', path, languages=['zh_CN', 'en_US'], fallback=True)
+t = gettext.translation('traffic', path, languages=['zh_CN', 'en_US'], fallback=True)
 
 def _(msg):
     return t.ugettext(msg)

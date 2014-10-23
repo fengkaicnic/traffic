@@ -31,6 +31,7 @@ import eventlet
 import greenlet
 
 from traffic.common import eventlet_backdoor
+from traffic.openstack.common.gettextutils import _
 from traffic import context
 from traffic import db
 from traffic import exception
