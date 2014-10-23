@@ -33,11 +33,13 @@ import webob.exc
 from traffic import exception
 from traffic import flags
 from traffic.openstack.common import log as logging
+from gettext import gettext
 
 
 FLAGS = flags.FLAGS
 LOG = logging.getLogger(__name__)
 
+_ = gettext
 
 class Server(object):
     """Server class to manage a WSGI server, serving a WSGI application."""
