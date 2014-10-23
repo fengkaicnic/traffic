@@ -118,7 +118,7 @@ global_opts = [
                     'running commands as root'),
     cfg.MultiStrOpt('osapi_compute_extension',
                     default=[
-                      'nova.api.openstack.compute.contrib.standard_extensions'
+                      'traffic.api.openstack.compute.contrib.standard_extensions'
                       ],
                     help='osapi compute extension to load'),
     cfg.BoolOpt('monkey_patch',
