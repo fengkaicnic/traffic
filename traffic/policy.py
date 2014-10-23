@@ -24,6 +24,9 @@ from traffic import flags
 from traffic.openstack.common import cfg
 from traffic.openstack.common import policy
 from traffic import utils
+from gettext import gettext
+
+_ = gettext
 
 
 policy_opts = [
