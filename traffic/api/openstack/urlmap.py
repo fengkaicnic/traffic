@@ -19,8 +19,8 @@ import paste.urlmap
 import re
 import urllib2
 
-from nova.api.openstack import wsgi
-from nova.openstack.common import log as logging
+from traffic.api.openstack import wsgi
+from traffic.openstack.common import log as logging
 
 
 _quoted_string_re = r'"[^"\\]*(?:\\.[^"\\]*)*"'
@@ -290,7 +290,7 @@ class URLMap(paste.urlmap.URLMap):
                 app = self._munge_path(app, path_info, app_url)
 
         if app:
-            environ['nova.best_content_type'] = mime_type
+            environ['traffic.best_content_type'] = mime_type
             return app(environ, start_response)
 
         environ['paste.urlmap_object'] = self

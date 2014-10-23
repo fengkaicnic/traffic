@@ -21,14 +21,14 @@ import os
 import webob.dec
 import webob.exc
 
-import nova.api.openstack
-from nova.api.openstack import wsgi
-from nova.api.openstack import xmlutil
-from nova import exception
-from nova import flags
-from nova.openstack.common import importutils
-from nova.openstack.common import log as logging
-import nova.policy
+import traffic.api.openstack
+from traffic.api.openstack import wsgi
+from traffic.api.openstack import xmlutil
+from traffic import exception
+from traffic import flags
+from traffic.openstack.common import importutils
+from traffic.openstack.common import log as logging
+import traffic.policy
 
 
 LOG = logging.getLogger(__name__)
@@ -175,7 +175,7 @@ class ExtensionsResource(wsgi.Resource):
 class ExtensionManager(object):
     """Load extensions from the configured extension path.
 
-    See nova/tests/api/openstack/volume/extensions/foxinsocks.py or an
+    See traffic/tests/api/openstack/volume/extensions/foxinsocks.py or an
     example extension implementation.
 
     """
@@ -189,9 +189,6 @@ class ExtensionManager(object):
         for _alias, ext in self.sorted_ext_list:
             yield ext
 
-    def is_loaded(self, alias):
-        return alias in self.extensions
-
     def register(self, ext):
         # Do nothing if the extension doesn't check out
         if not self._check_extension(ext):
@@ -201,7 +198,7 @@ class ExtensionManager(object):
         LOG.audit(_('Loaded extension: %s'), alias)
 
         if alias in self.extensions:
-            raise exception.NovaException("Found duplicate extension: %s"
+            raise exception.TrafficException("Found duplicate extension: %s"
                                           % alias)
         self.extensions[alias] = ext
         self.sorted_ext_list = None
@@ -284,9 +281,9 @@ class ExtensionManager(object):
 
 
 class ControllerExtension(object):
-    """Extend core controllers of nova OpenStack API.
+    """Extend core controllers of traffic OpenStack API.
 
-    Provide a way to extend existing nova OpenStack API core
+    Provide a way to extend existing traffic OpenStack API core
     controllers.
     """
 
@@ -297,7 +294,7 @@ class ControllerExtension(object):
 
 
 class ResourceExtension(object):
-    """Add top level resources to the OpenStack API in nova."""
+    """Add top level resources to the OpenStack API in traffic."""
 
     def __init__(self, collection, controller=None, parent=None,
                  collection_actions=None, member_actions=None,
@@ -397,7 +394,7 @@ def extension_authorizer(api_name, extension_name):
             target = {'project_id': context.project_id,
                       'user_id': context.user_id}
         action = '%s_extension:%s' % (api_name, extension_name)
-        nova.policy.enforce(context, action, target)
+        traffic.policy.enforce(context, action, target)
     return authorize
 
 
