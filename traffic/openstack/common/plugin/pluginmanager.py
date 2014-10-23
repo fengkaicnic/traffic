@@ -18,7 +18,7 @@ import pkg_resources
 from traffic.openstack.common import cfg
 from traffic.openstack.common import log as logging
 from traffic.openstack.common.notifier import api as notifier_api
-
+from traffic.openstack.common.gettextutils import _
 
 CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
