@@ -28,7 +28,9 @@ from traffic.api.openstack import wsgi
 from traffic.openstack.common import log as logging
 from traffic import utils
 from traffic import wsgi as base_wsgi
+from gettext import gettext
 
+_ = gettext
 
 LOG = logging.getLogger(__name__)
 
