@@ -25,19 +25,17 @@ import functools
 import sys
 
 from traffic.compute import utils as compute_utils
-from traffic.compute import vm_states
 from traffic import db
 from traffic import exception
 from traffic import flags
 from traffic import manager
-from traffic import notifications
 from traffic.openstack.common import cfg
 from traffic.openstack.common import excutils
 from traffic.openstack.common import importutils
 from traffic.openstack.common import log as logging
 from traffic.openstack.common.notifier import api as notifier
 from traffic.openstack.common.rpc import common as rpc_common
-from traffic import quota
+from traffic.openstack.common import rpc
 
 
 LOG = logging.getLogger(__name__)
@@ -49,7 +47,6 @@ scheduler_driver_opt = cfg.StrOpt('scheduler_driver',
 FLAGS = flags.FLAGS
 FLAGS.register_opt(scheduler_driver_opt)
 
-QUOTAS = quota.QUOTAS
 
 def _compute_topic(topic, ctxt, host, instance):
     '''Get the topic to use for a message.
@@ -100,150 +97,12 @@ class SchedulerManager(manager.Manager):
                 LOG.warning(_("Failed to schedule create_volume: %(ex)s") %
                             locals())
                 db.volume_update(context, volume_id, {'status': 'error'})
-
-    def live_migration(self, context, instance, dest,
-                       block_migration, disk_over_commit):
-        try:
-            return self.driver.schedule_live_migration(
-                context, instance, dest,
-                block_migration, disk_over_commit)
-        except Exception as ex:
-            with excutils.save_and_reraise_exception():
-                self._set_vm_state_and_notify('live_migration',
-                                             {'vm_state': vm_states.ERROR},
-                                             context, ex, {})
-
-    def run_instance(self, context, request_spec, admin_password,
-            injected_files, requested_networks, is_first_time,
-            filter_properties):
-        """Tries to call schedule_run_instance on the driver.
-        Sets instance vm_state to ERROR on exceptions
-        """
-        try:
-            return self.driver.schedule_run_instance(context,
-                    request_spec, admin_password, injected_files,
-                    requested_networks, is_first_time, filter_properties)
-        except exception.trafficlidHost as ex:
-            # don't re-raise
-            self._set_vm_state_and_notify('run_instance',
-                                         {'vm_state': vm_states.ERROR,
-                                          'task_state': None},
-                                          context, ex, request_spec)
-        except Exception as ex:
-            with excutils.save_and_reraise_exception():
-                self._set_vm_state_and_notify('run_instance',
-                                             {'vm_state': vm_states.ERROR,
-                                              'task_state': None},
-                                             context, ex, request_spec)
                 
     def create_traffic(self, context, ip, instance_id, band, prio):
         
-        
-
-    def get_host(self, context, image, request_spec, filter_properties,
-                    instance, instance_type, reservations):
-        try:
-            kwargs = {
-                'context': context,
-                'image': image,
-                'request_spec': request_spec,
-                'filter_properties': filter_properties,
-                'instance': instance,
-                'instance_type': instance_type,
-                'reservations': reservations,
-            }
-            host = self.driver.schedule_get_host(**kwargs)
-            return {'host': host}
-        except Exception as ex:
-            with excutils.save_and_reraise_exception():
-                self._set_vm_state_and_notify('get_host',
-                                             {'vm_state': vm_states.ACTIVE,
-                                              'task_state': None},
-                                             context, ex, request_spec)
-                if reservations:
-                    QUOTAS.rollback(context, reservations)
-
-    def prep_resize(self, context, image, request_spec, filter_properties,
-                    instance, instance_type, reservations):
-        """Tries to call schedule_prep_resize on the driver.
-        Sets instance vm_state to ACTIVE on NoHostFound
-        Sets vm_state to ERROR on other exceptions
-        """
-        try:
-            kwargs = {
-                'context': context,
-                'image': image,
-                'request_spec': request_spec,
-                'filter_properties': filter_properties,
-                'instance': instance,
-                'instance_type': instance_type,
-                'reservations': reservations,
-            }
-            return self.driver.schedule_prep_resize(**kwargs)
-        except exception.trafficlidHost as ex:
-            self._set_vm_state_and_notify('prep_resize',
-                                         {'vm_state': vm_states.ACTIVE,
-                                          'task_state': None},
-                                         context, ex, request_spec)
-            if reservations:
-                QUOTAS.rollback(context, reservations)
-        except Exception as ex:
-            with excutils.save_and_reraise_exception():
-                self._set_vm_state_and_notify('prep_resize',
-                                             {'vm_state': vm_states.ERROR,
-                                              'task_state': None},
-                                             context, ex, request_spec)
-                if reservations:
-                    QUOTAS.rollback(context, reservations)
-
-    def _set_vm_state_and_notify(self, method, updates, context, ex,
-                                 request_spec):
-        """changes VM state and notifies"""
-        # FIXME(comstud): Re-factor this somehow. Not sure this belongs in the
-        # scheduler manager like this. We should make this easier.
-        # run_instance only sends a request_spec, and an instance may or may
-        # not have been created in the API (or scheduler) already. If it was
-        # created, there's a 'uuid' set in the instance_properties of the
-        # request_spec.
-        # (littleidea): I refactored this a bit, and I agree
-        # it should be easier :)
-        # The refactoring could go further but trying to minimize changes
-        # for essex timeframe
-
-        LOG.warning(_("Failed to schedule_%(method)s: %(ex)s") % locals())
-
-        vm_state = updates['vm_state']
-        properties = request_spec.get('instance_properties', {})
-        # NOTE(vish): We shouldn't get here unless we have a catastrophic
-        #             failure, so just set all instances to error. if uuid
-        #             is not set, instance_uuids will be set to [None], this
-        #             is solely to preserve existing behavior and can
-        #             be removed along with the 'if instance_uuid:' if we can
-        #             verify that uuid is always set.
-        uuids = [properties.get('uuid')]
-        for instance_uuid in request_spec.get('instance_uuids') or uuids:
-            if instance_uuid:
-                compute_utils.add_instance_fault_from_exc(context,
-                        instance_uuid, ex, sys.exc_info())
-                state = vm_state.upper()
-                LOG.warning(_('Setting instance to %(state)s state.'),
-                            locals(), instance_uuid=instance_uuid)
-
-                # update instance state and notify on the transition
-                (old_ref, new_ref) = db.instance_update_and_get_original(
-                        context, instance_uuid, updates)
-                notifications.send_update(context, old_ref, new_ref,
-                        service="scheduler")
-
-            payload = dict(request_spec=request_spec,
-                           instance_properties=properties,
-                           instance_id=instance_uuid,
-                           state=vm_state,
-                           method=method,
-                           reason=ex)
-
-            notifier.notify(context, notifier.publisher_id("scheduler"),
-                            'scheduler.' + method, notifier.ERROR, payload)
+        self.compute_rpcapi.run_instance(context, ip=ip,
+                instance_id=instance_id,
+                band=band, prio=prio)
 
     # NOTE (masumotok) : This method should be moved to traffic.api.ec2.admin.
     # Based on bexar design summit discussion,
@@ -303,6 +162,3 @@ class SchedulerManager(manager.Manager):
 
         return {'resource': resource, 'usage': usage}
 
-    @manager.periodic_task
-    def _expire_reservations(self, context):
-        QUOTAS.expire(context)

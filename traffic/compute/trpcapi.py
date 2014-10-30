@@ -458,7 +458,7 @@ class ComputeAPI(traffic.openstack.common.rpc.proxy.RpcProxy):
                 is_first_time=is_first_time),
                 topic=_compute_topic(self.topic, ctxt, host, None))
         
-    def create_traffic(self, ctxt, instance_id, band, prio):
+    def create_traffic(self, ctxt, instance_id, band, prio, host):
         
         self.cast(ctxt, self.make_msg('create_traffic', instance_id=instance_id, 
                    band=band, prio=prio), topic=_compute_topic(self.topic, 

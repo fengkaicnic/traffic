@@ -40,9 +40,10 @@ class API(base.Base):
         super(API, self).__init__(**kwargs)
 
          
-    def create(self, context, ip, instance_id, band, prio):
+    def create(self, context, ip, instance_id, band, prio, host):
 #         compute_rpcapi.create_traffic(context, ip, instance_id, band, prio)
-        self.compute_rpcapi.create_traffic(context, ip, instance_id, band, prio)
+        #self.compute_rpcapi.create_traffic(context, ip, instance_id, band, prio)
+        self.scheduler_rpcapi.create_traffic(context, ip, instance_id, band, prio, host)
         
     def show(self, context, instance_id):
         result = self.tqdisc_api.get_by_instance_id(context, instance_id)

@@ -60,7 +60,8 @@ from traffic.openstack.common import rpc
 from traffic.openstack.common.rpc import common as rpc_common
 from traffic.openstack.common.rpc import dispatcher as rpc_dispatcher
 from traffic.openstack.common import timeutils
-
+from traffic import tqdisc
+from traffic import tfilter
 from traffic.scheduler import rpcapi as scheduler_rpcapi
 from traffic import utils
 
@@ -158,6 +159,8 @@ class TrafficManager(manager.SchedulerDependentManager):
         #wyk:a compute service can manage multiple compute nodes(distin by nodename)
         #for each compute node, exists a resource_tracker
         self._resource_tracker_dict = {}
+        self.tqdisc_api = tqdisc.API()
+        self.tfilter_api = tfilter.API()
 
     def get_console_topic(self, context):
         """Retrieves the console host for a project on this host.
@@ -274,9 +277,9 @@ class TrafficManager(manager.SchedulerDependentManager):
 
 
 
-    def create_traffic(self, ip, instanceid, band, prio):
-        
-
+    def create_traffic(self, context, ip, instanceid, band, prio):
+        classid = self.tqdisc_api.create(context, instanceid, band, prio)
+        self.tfilter_api.create(context, ip, classid, prio)
 
 
     def _deallocate_network(self, context, instance):
