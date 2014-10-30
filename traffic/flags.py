@@ -142,11 +142,11 @@ global_opts = [
                 help='The full class name of the compute API class to use'),
             
     cfg.StrOpt('tqdisc_api_class',
-               default='traffic.compute.tqdisc.api.API',
+               default='traffic.tqdisc.api.API',
                help='The full class name of the tqdisc API class to use'),
         
     cfg.StrOpt('tfilter_api_class',
-               default='traffic.compute.tfilter.api.API',
+               default='traffic.tfilter.api.API',
                help='The full class name of the tfilter API class to use'),
 
     cfg.StrOpt('auth_strategy',
