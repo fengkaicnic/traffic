@@ -47,6 +47,10 @@ class API(base.Base):
     def show(self, context, instance_id):
         result = self.tqdisc_api.get_by_instance_id(context, instance_id)
         return result["band"]
+    
+    def list(self, context):
+        result = self.tqdisc_api.get_all(context)
+        return result
         
     def get_by_ip(self, context, ip):
         tfilter = self.tfilter_api.get_by_ip(context, ip)

@@ -26,6 +26,7 @@ def main():
                                           id int not null,
                                           instanceid varchar(50),
                                           classid varchar(20),
+                                          ip varchar(25),
                                           host varchar(20),
                                           band int,
                                           prio int)'''

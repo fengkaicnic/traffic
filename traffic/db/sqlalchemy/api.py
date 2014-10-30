@@ -754,6 +754,15 @@ def tqdisc_get(context, id):
     return result
 
 @require_context
+def tqdisc_get_all(context):
+    result = model_query(context, models.Tqdisc, project_only=True)
+    
+    if not result:
+        raise exception.NoTqdisc
+    
+    return result
+
+@require_context
 def get_host_by_instance_id(context, instance_id, session=None):
     result = model_query(context, models.Instance, project_only=True).\
                  filter_by(uuid=instance_id).\

@@ -97,6 +97,10 @@ def tqdisc_get(context, id):
     'get a tqdisc'
     return IMPL.tqdisc_get(context, id)
 
+def tqdisc_get_all(context):
+    'get all tqdisc'
+    return IMPL.tqdisc_get_all(context)
+
 def tqdisc_get_by_instance_id(context, instance_id):
     return IMPL.tqdisc_get_by_instance_id(context, instance_id)
 

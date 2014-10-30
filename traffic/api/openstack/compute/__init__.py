@@ -71,6 +71,12 @@ class APIRouter(traffic.api.openstack.APIRouter):
                        conditions={"method": ['GET']})
         
         mapper.connect("traffic",
+                       "/traffic/list/",
+                       controller=self.resources['traffic'],
+                       action='list',
+                       conditions={"method": ['GET']})
+        
+        mapper.connect("traffic",
                        "/traffic/show_by_ip/",
                        controller=self.resources['traffic'],
                        action='show_by_ip',

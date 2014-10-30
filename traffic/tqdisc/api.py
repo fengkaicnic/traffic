@@ -25,6 +25,10 @@ class API(base.Base):
         result = self.db.tqdisc_get(context, id)
         return result
     
+    def get_all(self, context):
+        result = self.db.tqdisc_get_all(context)
+        return result
+    
     def get_by_instance_id(self, context, instance_id):
         result = self.db.tqdisc_get_by_instance_id(context, instance_id)
         return result

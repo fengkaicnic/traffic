@@ -143,8 +143,6 @@ def reverts_task_state(function):
 
     return decorated_function
 
-
-
 class TrafficManager(manager.SchedulerDependentManager):
     """Manages the running instances from creation to destruction."""
 
@@ -276,8 +274,8 @@ class TrafficManager(manager.SchedulerDependentManager):
 
 
 
-
- 
+    def create_traffic(self, ip, instanceid, band, prio):
+        
 
 
 
