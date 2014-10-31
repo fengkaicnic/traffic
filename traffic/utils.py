@@ -46,6 +46,7 @@ from eventlet.green import subprocess
 from eventlet import greenthread
 from eventlet import semaphore
 import netaddr
+from traffic.openstack.common.gettextutils import _
 
 from traffic.common import deprecated
 from traffic import exception
