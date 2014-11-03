@@ -150,7 +150,7 @@ global_opts = [
                help='The full class name of the tfilter API class to use'),
 
     cfg.StrOpt('auth_strategy',
-               default='noauth',
+               default='keystone',
                help='The strategy to use for auth: noauth or keystone.'),
 
 ]

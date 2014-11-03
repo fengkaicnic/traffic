@@ -104,7 +104,6 @@ class ProjectMapper(APIMapper):
                                      collection_name,
                                      **kwargs)
 
-
 class APIRouter(base_wsgi.Router):
     """
     Routes requests on the OpenStack API to the appropriate controller

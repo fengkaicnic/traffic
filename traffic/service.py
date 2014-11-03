@@ -64,7 +64,7 @@ service_opts = [
                help='IP address for OpenStack API to listen'),
     cfg.IntOpt('traffic_listen_port',
                default=9898,
-               help='list port for osapi compute'),
+               help='list port for traffic compute'),
     cfg.IntOpt('traffic_workers',
                default=None,
                help='Number of workers for OpenStack API service'),
