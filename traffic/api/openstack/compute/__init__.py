@@ -65,19 +65,19 @@ class APIRouter(traffic.api.openstack.APIRouter):
                         member={'action':'POST'})
         
         mapper.connect("traffic",
-                       "/traffic/delete_by_ip/",
+                       "/{project_id}/traffic/delete_by_ip/",
                        controller=self.resources['traffic'],
                        action='delete_by_ip',
-                       conditions={"method": ['GET']})
+                       conditions={"delete_by_ip": 'GET'})
         
         mapper.connect("traffic",
-                       "/traffic/list/",
+                       "/{project_id}/traffic/list/",
                        controller=self.resources['traffic'],
                        action='list',
-                       conditions={"method": ['GET']})
+                       conditions={"list":'GET'})
         
         mapper.connect("traffic",
-                       "/traffic/show_by_ip/",
+                       "/{project_id}/traffic/show_by_ip/",
                        controller=self.resources['traffic'],
                        action='show_by_ip',
-                       conditions={"method": ['GET']})
+                       conditions={"show_by_ip":'GET'})
