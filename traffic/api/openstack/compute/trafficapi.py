@@ -17,6 +17,10 @@ class Controller(wsgi.Controller):
     
     _view_builder_class = tqdisc.ViewBuilder
     
+    def __init__(self, **kwargs):
+        super(Controller, self).__init__(**kwargs)
+        self._compute_api = compute.API()
+    
     def _get_tqdisc(self, context, server_id):
         try:
             tqdisc = self._compute_api.get(context, server_id)
@@ -24,10 +28,6 @@ class Controller(wsgi.Controller):
             msg = ('Tqdisc does not exsit')
             raise exc.HTTPNotFound(explanation=msg)
         return tqdisc
-    
-    def __init__(self, **kwargs):
-        super(Controller, self).__init__(**kwargs)
-        self._compute_api = compute.API()
 
     def create(self, req, instance_id, body):
         context = req.environ['traffic.context']
