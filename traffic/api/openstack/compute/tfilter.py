@@ -70,6 +70,6 @@ class Controller(wsgi.Controller):
     
 def create_resource():
     
-    return wsgi.Resource(Controller)
+    return wsgi.Resource(Controller())
         
         

@@ -1,5 +1,6 @@
 from webob import exc
 import traffic
+from traffic import exception
 
 from traffic.api.openstack import common
 from traffic.api.openstack import wsgi
@@ -19,7 +20,7 @@ class Controller(wsgi.Controller):
     def _get_tqdisc(self, context, server_id):
         try:
             tqdisc = self._compute_api.get(context, server_id)
-        except traffic.excpetion.NotFound:
+        except traffic.exception.NotFound:
             msg = ('Tqdisc does not exsit')
             raise exc.HTTPNotFound(explanation=msg)
         return tqdisc
@@ -46,6 +47,6 @@ class Controller(wsgi.Controller):
     
 def create_resource():
     
-    return wsgi.Resource(Controller)
+    return wsgi.Resource(Controller())
         
         
