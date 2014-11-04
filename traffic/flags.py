@@ -121,6 +121,10 @@ global_opts = [
                       'traffic.api.openstack.compute.contrib.standard_extensions'
                       ],
                     help='osapi compute extension to load'),
+    
+    cfg.StrOpt('compute_topic',
+               default='traffic',
+               help='the topic compute nodes listen on'),
     cfg.BoolOpt('monkey_patch',
                 default=False,
                 help='Whether to log monkey patching'),
