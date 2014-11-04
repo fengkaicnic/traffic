@@ -58,13 +58,13 @@ class APIRouter(traffic.api.openstack.APIRouter):
 #                        collection={'detail':'GET'},
 #                        member={'action':'POST'}) 
         
-#        self.resources['traffic'] = trafficapi.create_resource()
-#        mapper.resource("traffic", "traffic",
-#                        controller=self.resources['traffic'],
-#                        collection={'detail':'GET'},
-#                        member={'action':'POST'})
+        self.resources['traffic'] = trafficapi.create_resource()
+        mapper.resource("traffic", "traffic",
+                        controller=self.resources['traffic'],
+                        collection={'detail':'GET'},
+                        member={'action':'POST'})
         
-        controller = trafficapi.create_resource()
+        controller = self.resources['traffic']
         mapper.connect("traffic",
                        "/{project_id}/traffic/delete_by_ip/{}",
                        controller=controller,
