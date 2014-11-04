@@ -46,17 +46,17 @@ class APIRouter(traffic.api.openstack.APIRouter):
 
         mapper.redirect("", "/")
         
-#        self.resources['tqdisc'] = tqdisc.create_resource()
-#        mapper.resource("tqdisc", "tqdiscs",
-#                        controller=self.resources['tqdisc'],
-#                        collection={'detail':'GET'},
-#                        member={'action':'POST'}) 
+        self.resources['tqdisc'] = tqdisc.create_resource()
+        mapper.resource("tqdisc", "tqdiscs",
+                        controller=self.resources['tqdisc'],
+                        collection={'detail':'GET'},
+                        member={'action':'POST'}) 
         
-#        self.resources['tfilter'] = tfilter.create_resource()
-#        mapper.resource("tfilter", "tfilters",
-#                        controller=self.resources["tfilter"],
-#                        collection={'detail':'GET'},
-#                        member={'action':'POST'}) 
+        self.resources['tfilter'] = tfilter.create_resource()
+        mapper.resource("tfilter", "tfilters",
+                        controller=self.resources["tfilter"],
+                        collection={'detail':'GET'},
+                        member={'action':'POST'}) 
         
         self.resources['traffic'] = trafficapi.create_resource()
         mapper.resource("traffic", "traffic",
