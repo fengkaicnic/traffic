@@ -47,28 +47,28 @@ class APIRouter(traffic.api.openstack.APIRouter):
         mapper.redirect("", "/")
         
         self.resources['tqdisc'] = tqdisc.create_resource()
-        mapper.resource("tqdisc", "tqdiscs",
-                        controller=self.resources['tqdisc'],
-                        collection={'detail':'GET'},
-                        member={'action':'POST'})
+#        mapper.resource("tqdisc", "tqdiscs",
+#                        controller=self.resources['tqdisc'],
+#                        collection={'detail':'GET'},
+#                        member={'action':'POST'}) 
         
         self.resources['tfilter'] = tfilter.create_resource()
-        mapper.resource("tfilter", "tfilters",
-                        controller=self.resources["tfilter"],
-                        collection={'detail':'GET'},
-                        member={'action':'POST'})
+#        mapper.resource("tfilter", "tfilters",
+#                        controller=self.resources["tfilter"],
+#                        collection={'detail':'GET'},
+#                        member={'action':'POST'}) 
         
         self.resources['traffic'] = trafficapi.create_resource()
-        mapper.resource("traffic", "traffic",
-                        controller=self.resources['traffic'],
-                        collection={'detail':'GET'},
-                        member={'action':'POST'})
+#        mapper.resource("traffic", "traffic",
+#                        controller=self.resources['traffic'],
+#                        collection={'detail':'GET'},
+#                        member={'action':'POST'})
         
         mapper.connect("traffic",
-                       "/{project_id}/traffic/delete_by_ip/",
+                       "/{project_id}/traffic/delete_by_ip/{}",
                        controller=self.resources['traffic'],
                        action='delete_by_ip',
-                       conditions={"delete_by_ip": 'GET'})
+                       conditions={"delete_by_ip": 'POST'})
         
         mapper.connect("traffic",
                        "/{project_id}/traffic/list/",
@@ -77,7 +77,7 @@ class APIRouter(traffic.api.openstack.APIRouter):
                        conditions={"list":'GET'})
         
         mapper.connect("traffic",
-                       "/{project_id}/traffic/show_by_ip/",
+                       "/{project_id}/traffic/show_by_ip/{ip}",
                        controller=self.resources['traffic'],
                        action='show_by_ip',
-                       conditions={"show_by_ip":'GET'})
+                       conditions={"show_by_ip":'POST'})
