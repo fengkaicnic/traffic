@@ -38,4 +38,4 @@ class Base(object):
         if not db_driver:
             db_driver = FLAGS.db_driver
         self.db = importutils.import_module(db_driver)  # pylint: disable=C0103
-        self.set_execute(utils.execute)
+        self._execute = utils.execute
