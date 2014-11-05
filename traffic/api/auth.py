@@ -61,7 +61,7 @@ class InjectContext(wsgi.Middleware):
 
     @webob.dec.wsgify(RequestClass=wsgi.Request)
     def __call__(self, req):
-        req.environ['nova.context'] = self.context
+        req.environ['traffic.context'] = self.context
         return self.application
 
 
@@ -114,7 +114,7 @@ class TrafficKeystoneContext(wsgi.Middleware):
                                      remote_address=remote_address,
                                      service_catalog=service_catalog)
 
-        req.environ['nova.context'] = ctx
+        req.environ['traffic.context'] = ctx
         return self.application
 
     def _get_roles(self, req):

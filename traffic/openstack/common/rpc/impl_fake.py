@@ -22,8 +22,8 @@ import time
 
 import eventlet
 
-from nova.openstack.common import jsonutils
-from nova.openstack.common.rpc import common as rpc_common
+from traffic.openstack.common import jsonutils
+from traffic.openstack.common.rpc import common as rpc_common
 
 CONSUMERS = {}
 

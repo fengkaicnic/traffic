@@ -14,10 +14,10 @@ LOG = logging.getLogger(__name__)
 
 traffic_manager_opts = [
     cfg.StrOpt('storage_availability_zone',
-               default='nova',
+               default='traffic',
                help='availability zone of this service'),
     cfg.StrOpt('volume_driver',
-               default='nova.volume.driver.ISCSIDriver',
+               default='traffic.volume.driver.ISCSIDriver',
                help='Driver to use for volume creation'),
     cfg.BoolOpt('use_local_volumes',
                 default=True,
