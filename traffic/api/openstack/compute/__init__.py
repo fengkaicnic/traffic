@@ -59,25 +59,25 @@ class APIRouter(traffic.api.openstack.APIRouter):
 #                        member={'action':'POST'}) 
         
         self.resources['traffic'] = trafficapi.create_resource()
-        mapper.resource("traffic", "traffic",
-                        controller=self.resources['traffic'],
-                        collection={'detail':'GET'},
-                        member={'action':'POST'})
+#        mapper.resource("traffic", "traffic",
+#                        controller=self.resources['traffic'],
+#                        collection={'detail':'GET'},
+#                        member={'action':'POST'})
         
         controller = self.resources['traffic']
-        mapper.connect("traffic",
-                       "/{project_id}/traffic/delete_by_ip/{ip}",
-                       controller=controller,
-                       action='delete_by_ip',
-                       conditions={"delete_by_ip": 'POST'})
+#        mapper.connect("traffic",
+#                       "/{project_id}/traffic/delete_by_ip/{ip}",
+#                       controller=controller,
+#                       action='delete_by_ip',
+#                       conditions={"delete_by_ip": 'POST'})
         
         mapper.connect("/{project_id}/traffic/list/",
                        controller=controller,
                        action='list',
                        conditions={"list":'GET'})
         
-        mapper.connect("traffic",
-                       "/{project_id}/traffic/show_by_ip/{ip}",
-                       controller=controller,
-                       action='show_by_ip',
-                       conditions={"show_by_ip":'POST'})
+##        mapper.connect("traffic",
+ #                      "/{project_id}/traffic/show_by_ip/{ip}",
+ #                      controller=controller,
+ #                      action='show_by_ip',
+ #                      conditions={"show_by_ip":'POST'})
