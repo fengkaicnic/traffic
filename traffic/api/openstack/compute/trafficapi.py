@@ -60,7 +60,7 @@ class Controller(wsgi.Controller):
         band = self._compute_api.show(context, instance_id)
         return band
     
-    def list(self, req, body):
+    def list(self, req):
         context = req.environ['traffic.context']
         bands = self._compute_api.list(context)
         
