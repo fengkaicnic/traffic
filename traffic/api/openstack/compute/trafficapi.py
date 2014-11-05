@@ -48,10 +48,11 @@ class Controller(wsgi.Controller):
         self._compute_api.delete_by_ip(context, ip)
         raise exc.HTTPNotImplemented()
     
-    def index(self, req, server_id, body):
+    def index(self, req):
         context = req.environ['traffic.context']
-        tqdisc = self._get_tqdisc(context, server_id)
-        return self._view_builder.index(tqdisc)
+        bands = self._compute_api.list(context)
+        
+        return bands
     
     def show(self, req, instance_id, body):
         context = req.environ['traffic.context']
