@@ -21,7 +21,7 @@
 from traffic import flags
 from traffic.openstack.common import cfg
 from traffic.openstack.common import importutils
-
+from traffic import utils
 
 db_driver_opt = cfg.StrOpt('db_driver',
                            default='traffic.db',
@@ -38,3 +38,4 @@ class Base(object):
         if not db_driver:
             db_driver = FLAGS.db_driver
         self.db = importutils.import_module(db_driver)  # pylint: disable=C0103
+        self.set_execute(utils.execute)

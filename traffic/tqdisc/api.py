@@ -6,9 +6,6 @@ from traffic.db import base
 
 class API(base.Base):
     
-    def __init__(self, execute=utils.execute, **kwargs):
-        self.set_execute(execute)
-    
     def set_execute(self, execute):
         self._execute = execute
         
