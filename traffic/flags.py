@@ -121,7 +121,9 @@ global_opts = [
                       'traffic.api.openstack.compute.contrib.standard_extensions'
                       ],
                     help='osapi compute extension to load'),
-    
+    cfg.IntOpt('sql_idle_timeout',
+               default=3600,
+               help='timeout before idle sql connections are reaped'),
     cfg.StrOpt('compute_topic',
                default='traffic',
                help='the topic compute nodes listen on'),
