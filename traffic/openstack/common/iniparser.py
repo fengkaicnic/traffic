@@ -94,7 +94,6 @@ class BaseParser(object):
                 key, value = self._split_key_value(line)
                 if not key:
                     return self.error_empty_key(line)
-
         if key:
             # Flush previous assignment, if any
             self._assignment(key, value)
