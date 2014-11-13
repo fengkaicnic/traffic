@@ -757,8 +757,8 @@ def tqdisc_get(context, id):
 def tqdisc_get_all(context):
     result = model_query(context, models.Tqdisc, project_only=True).all()
     
-#    if not result:
-#        raise exception.NoTqdisc
+    if not result:
+        return {} 
     
     return result
 
