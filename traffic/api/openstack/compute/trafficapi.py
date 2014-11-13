@@ -62,9 +62,9 @@ class Controller(wsgi.Controller):
     
     def list(self, req):
         context = req.environ['traffic.context']
-        bands = self._compute_api.list(context)
+        result = self._compute_api.list(context)
         
-        return bands
+        return result['band']
     
     def show_by_ip(self, req, ip, body):
         context = req.environ['traffic.context']
