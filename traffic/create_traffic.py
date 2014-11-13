@@ -12,9 +12,9 @@ def main():
  #   cursor.execute('drop table if exists tfilter')
     tfilter_sql = '''create table tfilter(
                                         id int not null,
-                                        created_at datetime,
-                                        updated_at datetime
-                                        deleted_at datetime,
+                                        created_at datetime default null,
+                                        updated_at datetime default null,
+                                        deleted_at datetime default null,
                                         deleted varchar(36),
                                         classid int,
                                         handle int,
@@ -28,9 +28,9 @@ def main():
     
     tqdisc_sql = '''create table tqdisc(
                                           id int not null,
-                                          created_at datetime,
-                                          updated_at datetime
-                                          deleted_at datetime,
+                                          created_at datetime default null,
+                                          updated_at datetime default null,
+                                          deleted_at datetime default null,
                                           deleted varchar(36),
                                           instanceid varchar(50),
                                           classid varchar(20),
