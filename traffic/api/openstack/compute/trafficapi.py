@@ -63,6 +63,9 @@ class Controller(wsgi.Controller):
     def list(self, req):
         context = req.environ['traffic.context']
         result = self._compute_api.list(context)
+         
+        if not result:
+            return None
         
         return result['band']
     
