@@ -50,9 +50,9 @@ class Controller(wsgi.Controller):
     
     def index(self, req):
         context = req.environ['traffic.context']
-        bands = self._compute_api.list(context)
+        result = self._compute_api.list(context)
         
-        return bands
+        return result['band']
     
     def show(self, req, instance_id, body):
         context = req.environ['traffic.context']
