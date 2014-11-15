@@ -31,11 +31,10 @@ class Controller(wsgi.Controller):
 
     def create(self, req, body):
         context = req.environ['traffic.context']
-        tbody = body['body']
         instance_id = body['instance_id']
-        band = tbody['band']
-        prio = tbody['prio']
-        ip = tbody['ip']
+        band = body['band']
+        prio = body['prio']
+        ip = body['ip']
         self._compute_api.create(context, ip, instance_id, band, prio)
         raise exc.HTTPNotImplemented()
     
