@@ -31,7 +31,7 @@ class Controller(wsgi.Controller):
 
     def create(self, req, body):
         context = req.environ['traffic.context']
-        tbody = body['traffic']
+        tbody = body['body']
         instance_id = body['instance_id']
         band = tbody['band']
         prio = tbody['prio']
