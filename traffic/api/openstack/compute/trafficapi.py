@@ -29,9 +29,10 @@ class Controller(wsgi.Controller):
             raise exc.HTTPNotFound(explanation=msg)
         return tqdisc
 
-    def create(self, req, instance_id, body):
+    def create(self, req, body):
         context = req.environ['traffic.context']
         tbody = body['traffic']
+        instance_id = body['instance_id']
         band = tbody['band']
         prio = tbody['prio']
         ip = tbody['ip']
