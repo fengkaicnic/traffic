@@ -67,7 +67,7 @@ class Controller(wsgi.Controller):
         if not result:
             return None
         
-        return result['band']
+        return result
     
     def show_by_ip(self, req, ip, body):
         context = req.environ['traffic.context']

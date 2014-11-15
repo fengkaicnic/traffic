@@ -72,6 +72,12 @@ class APIRouter(traffic.api.openstack.APIRouter):
                        conditions={"delete_by_ip": 'POST'})
         
         mapper.connect("traffic",
+                       "/{project_id}/traffic/create/",
+                       controller=controller,
+                       action='create',
+                       conditions={"method":'GET'})
+        
+        mapper.connect("traffic",
                        "/{project_id}/traffic/list/",
                        controller=controller,
                        action='list',
