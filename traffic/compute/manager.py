@@ -144,7 +144,7 @@ def reverts_task_state(function):
 
     return decorated_function
 
-class TrafficManager(manager.SchedulerDependentManager):
+class ComputeManager(manager.SchedulerDependentManager):
     """Manages the running instances from creation to destruction."""
 
     RPC_API_VERSION = '2.2'
@@ -154,7 +154,7 @@ class TrafficManager(manager.SchedulerDependentManager):
         # TODO(vish): sync driver creation logic with the rest of the system
         #             and re-document the module docstring
 
-        super(TrafficManager, self).__init__(service_name="traffic",
+        super(ComputeManager, self).__init__(service_name="traffic",
                                              *args, **kwargs)
         #wyk:a compute service can manage multiple compute nodes(distin by nodename)
         #for each compute node, exists a resource_tracker
