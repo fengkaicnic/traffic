@@ -376,10 +376,10 @@ class Service(object):
                                                  self.binary)
             self.service_id = service_ref['id']
         except exception.NotFound:
-            self._create_service_ref(ctxt)'''
+            self._create_service_ref(ctxt)
 
         if 'traffic-compute' == self.binary:
-            self.manager.update_available_resource(ctxt)
+            self.manager.update_available_resource(ctxt) '''
 
         self.conn = rpc.create_connection(new=True)
         LOG.debug(_("Creating Consumer connection for Service %s") %
