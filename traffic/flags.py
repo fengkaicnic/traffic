@@ -150,6 +150,10 @@ global_opts = [
     cfg.StrOpt('traffic_api_class',
                 default='traffic.compute.api.API',
                 help='The full class name of the compute API class to use'),
+               
+    cfg.StrOpt('node_availability_zone',
+               default='traffic',
+               help='availability zone of this node'),
             
     cfg.StrOpt('tqdisc_api_class',
                default='traffic.tqdisc.api.API',
