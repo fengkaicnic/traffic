@@ -37,7 +37,7 @@ FLAGS = flags.FLAGS
 BASE = declarative_base()
 
 
-class trafficBase(object):
+class TrafficBase(object):
     """Base class for traffic Models."""
     __table_args__ = {'mysql_engine': 'InnoDB'}
     __table_initialized__ = False
@@ -105,7 +105,7 @@ class trafficBase(object):
         return local.iteritems()
 
 
-class Service(BASE, trafficBase):
+class Service_ECCP(BASE, TrafficBase):
     """Represents a running service on a host."""
 
     __tablename__ = 'services'
@@ -117,7 +117,26 @@ class Service(BASE, trafficBase):
     disabled = Column(Boolean, default=False)
 #    availability_zone = Column(String(255), default='traffic')
 
-class Tqdisc(BASE, trafficBase):
+class Service(BASE, TrafficBase):
+    """Represents a running service on a host."""
+
+    __tablename__ = 'services'
+    __table_args__ = (
+        schema.UniqueConstraint("host", "topic", "deleted",
+                                name="uniq_services0host0topic0deleted"),
+        schema.UniqueConstraint("host", "binary", "deleted",
+                                name="uniq_services0host0binary0deleted")
+        )
+
+    id = Column(Integer, primary_key=True)
+    host = Column(String(255))  # , ForeignKey('hosts.id'))
+    binary = Column(String(255))
+    topic = Column(String(255))
+    report_count = Column(Integer, nullable=False, default=0)
+    disabled = Column(Boolean, default=False)
+    disabled_reason = Column(String(255))
+
+class Tqdisc(BASE, TrafficBase):
     '''tqdisc table of the service'''
     __tablename__ = 'tqdisc'
     id = Column(Integer, primary_key=True)
@@ -127,7 +146,7 @@ class Tqdisc(BASE, trafficBase):
     band = Column(Integer)
     prio = Column(Integer)
     
-class Tfilter(BASE, trafficBase):
+class Tfilter(BASE, TrafficBase):
     
     '''tfilter table of the service'''
     __tablename__ = 'tfilter'
@@ -138,7 +157,7 @@ class Tfilter(BASE, trafficBase):
     flow_id = Column(String(255))
     prio = Column(Integer)
 
-class ComputeNode(BASE, trafficBase):
+class ComputeNode(BASE, TrafficBase):
     """Represents a running compute service on a host."""
 
     __tablename__ = 'compute_nodes'
@@ -183,7 +202,7 @@ class ComputeNode(BASE, trafficBase):
     disk_available_least = Column(Integer)
 
 
-class ComputeNodeStat(BASE, trafficBase):
+class ComputeNodeStat(BASE, TrafficBase):
     """Stats related to the current workload of a compute host that are
     intended to aid in making scheduler decisions."""
     __tablename__ = 'compute_node_stats'
@@ -201,7 +220,7 @@ class ComputeNodeStat(BASE, trafficBase):
         return "{%d: %s = %s}" % (self.compute_node_id, self.key, self.value)
 
 
-class Certificate(BASE, trafficBase):
+class Certificate(BASE, TrafficBase):
     """Represents a x509 certificate"""
     __tablename__ = 'certificates'
     id = Column(Integer, primary_key=True)
@@ -211,7 +230,7 @@ class Certificate(BASE, trafficBase):
     file_name = Column(String(255))
 
 
-class Instance(BASE, trafficBase):
+class Instance(BASE, TrafficBase):
     """Represents a guest VM."""
     __tablename__ = 'instances'
     injected_files = []
@@ -326,7 +345,7 @@ class Instance(BASE, trafficBase):
     disable_terminate = Column(Boolean(), default=False, nullable=False)
 
 
-class InstanceInfoCache(BASE, trafficBase):
+class InstanceInfoCache(BASE, TrafficBase):
     """
     Represents a cache of information about an instance
     """
@@ -344,7 +363,7 @@ class InstanceInfoCache(BASE, trafficBase):
                             primaryjoin=instance_uuid == Instance.uuid)
 
 
-class InstanceTypes(BASE, trafficBase):
+class InstanceTypes(BASE, TrafficBase):
     """Represent possible instance_types or flavor of VM offered"""
     __tablename__ = "instance_types"
     id = Column(Integer, primary_key=True)
@@ -368,7 +387,7 @@ class InstanceTypes(BASE, trafficBase):
                                'InstanceTypes.id)')
 
 
-class Volume(BASE, trafficBase):
+class Volume(BASE, TrafficBase):
     """Represents a block storage device that can be attached to a VM."""
     __tablename__ = 'volumes'
     id = Column(String(36), primary_key=True)
@@ -405,7 +424,7 @@ class Volume(BASE, trafficBase):
     volume_type_id = Column(Integer)
 
 
-class VolumeMetadata(BASE, trafficBase):
+class VolumeMetadata(BASE, TrafficBase):
     """Represents a metadata key/value pair for a volume"""
     __tablename__ = 'volume_metadata'
     id = Column(Integer, primary_key=True)
@@ -419,7 +438,7 @@ class VolumeMetadata(BASE, trafficBase):
                                 'VolumeMetadata.deleted == False)')
 
 
-class VolumeTypes(BASE, trafficBase):
+class VolumeTypes(BASE, TrafficBase):
     """Represent possible volume_types of volumes offered"""
     __tablename__ = "volume_types"
     id = Column(Integer, primary_key=True)
@@ -433,7 +452,7 @@ class VolumeTypes(BASE, trafficBase):
                                'VolumeTypes.deleted == False)')
 
 
-class VolumeTypeExtraSpecs(BASE, trafficBase):
+class VolumeTypeExtraSpecs(BASE, TrafficBase):
     """Represents additional specs as key/value pairs for a volume_type"""
     __tablename__ = 'volume_type_extra_specs'
     id = Column(Integer, primary_key=True)
@@ -448,7 +467,7 @@ class VolumeTypeExtraSpecs(BASE, trafficBase):
                  'VolumeTypeExtraSpecs.deleted == False)')
 
 
-class Quota(BASE, trafficBase):
+class Quota(BASE, TrafficBase):
     """Represents a single quota override for a project.
 
     If there is no row for a given project id and resource, then the
@@ -467,7 +486,7 @@ class Quota(BASE, trafficBase):
     hard_limit = Column(Integer, nullable=True)
 
 
-class QuotaClass(BASE, trafficBase):
+class QuotaClass(BASE, TrafficBase):
     """Represents a single quota override for a quota class.
 
     If there is no row for a given quota class and resource, then the
@@ -484,7 +503,7 @@ class QuotaClass(BASE, trafficBase):
     hard_limit = Column(Integer, nullable=True)
 
 
-class QuotaUsage(BASE, trafficBase):
+class QuotaUsage(BASE, TrafficBase):
     """Represents the current usage for a given resource."""
 
     __tablename__ = 'quota_usages'
@@ -503,7 +522,7 @@ class QuotaUsage(BASE, trafficBase):
     until_refresh = Column(Integer, nullable=True)
 
 
-class Reservation(BASE, trafficBase):
+class Reservation(BASE, TrafficBase):
     """Represents a resource reservation for quotas."""
 
     __tablename__ = 'reservations'
@@ -525,7 +544,7 @@ class Reservation(BASE, trafficBase):
                          'QuotaUsage.deleted == False)')
 
 
-class Snapshot(BASE, trafficBase):
+class Snapshot(BASE, TrafficBase):
     """Represents a block storage device that can be attached to a VM."""
     __tablename__ = 'snapshots'
     id = Column(String(36), primary_key=True)
@@ -550,7 +569,7 @@ class Snapshot(BASE, trafficBase):
     display_description = Column(String(255))
 
 
-class BlockDeviceMapping(BASE, trafficBase):
+class BlockDeviceMapping(BASE, TrafficBase):
     """Represents block device mapping that is defined by EC2"""
     __tablename__ = "block_device_mapping"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -587,7 +606,7 @@ class BlockDeviceMapping(BASE, trafficBase):
     connection_info = Column(Text, nullable=True)
 
 
-class IscsiTarget(BASE, trafficBase):
+class IscsiTarget(BASE, TrafficBase):
     """Represents an iscsi target for a given host"""
     __tablename__ = 'iscsi_targets'
     __table_args__ = (schema.UniqueConstraint("target_num", "host"),
@@ -603,14 +622,14 @@ class IscsiTarget(BASE, trafficBase):
                                            'IscsiTarget.deleted==False)')
 
 
-class SecurityGroupInstanceAssociation(BASE, trafficBase):
+class SecurityGroupInstanceAssociation(BASE, TrafficBase):
     __tablename__ = 'security_group_instance_association'
     id = Column(Integer, primary_key=True)
     security_group_id = Column(Integer, ForeignKey('security_groups.id'))
     instance_uuid = Column(String(36), ForeignKey('instances.uuid'))
 
 
-class SecurityGroup(BASE, trafficBase):
+class SecurityGroup(BASE, TrafficBase):
     """Represents a security group."""
     __tablename__ = 'security_groups'
     id = Column(Integer, primary_key=True)
@@ -636,7 +655,7 @@ class SecurityGroup(BASE, trafficBase):
                              backref='security_groups')
 
 
-class SecurityGroupIngressRule(BASE, trafficBase):
+class SecurityGroupIngressRule(BASE, TrafficBase):
     """Represents a rule in a security group."""
     __tablename__ = 'security_group_rules'
     id = Column(Integer, primary_key=True)
@@ -663,7 +682,7 @@ class SecurityGroupIngressRule(BASE, trafficBase):
         'SecurityGroupIngressRule.deleted == False)')
 
 
-class ProviderFirewallRule(BASE, trafficBase):
+class ProviderFirewallRule(BASE, TrafficBase):
     """Represents a rule in a security group."""
     __tablename__ = 'provider_fw_rules'
     id = Column(Integer, primary_key=True)
@@ -674,7 +693,7 @@ class ProviderFirewallRule(BASE, trafficBase):
     cidr = Column(String(255))
 
 
-class KeyPair(BASE, trafficBase):
+class KeyPair(BASE, TrafficBase):
     """Represents a public key pair for ssh."""
     __tablename__ = 'key_pairs'
     id = Column(Integer, primary_key=True)
@@ -687,7 +706,7 @@ class KeyPair(BASE, trafficBase):
     public_key = Column(Text)
 
 
-class Migration(BASE, trafficBase):
+class Migration(BASE, TrafficBase):
     """Represents a running host-to-host migration."""
     __tablename__ = 'migrations'
     id = Column(Integer, primary_key=True, nullable=False)
@@ -704,7 +723,7 @@ class Migration(BASE, trafficBase):
     status = Column(String(255))
 
 
-class Network(BASE, trafficBase):
+class Network(BASE, TrafficBase):
     """Represents a network."""
     __tablename__ = 'networks'
     __table_args__ = (schema.UniqueConstraint("vpn_public_address",
@@ -742,7 +761,7 @@ class Network(BASE, trafficBase):
     uuid = Column(String(36))
 
 
-class VirtualInterface(BASE, trafficBase):
+class VirtualInterface(BASE, TrafficBase):
     """Represents a virtual interface on an instance."""
     __tablename__ = 'virtual_interfaces'
     id = Column(Integer, primary_key=True)
@@ -753,7 +772,7 @@ class VirtualInterface(BASE, trafficBase):
 
 
 # TODO(vish): can these both come from the same baseclass?
-class FixedIp(BASE, trafficBase):
+class FixedIp(BASE, TrafficBase):
     """Represents a fixed ip for an instance."""
     __tablename__ = 'fixed_ips'
     id = Column(Integer, primary_key=True)
@@ -770,7 +789,7 @@ class FixedIp(BASE, trafficBase):
     host = Column(String(255))
 
 
-class FloatingIp(BASE, trafficBase):
+class FloatingIp(BASE, TrafficBase):
     """Represents a floating ip that dynamically forwards to a fixed ip."""
     __tablename__ = 'floating_ips'
     id = Column(Integer, primary_key=True)
@@ -783,7 +802,7 @@ class FloatingIp(BASE, trafficBase):
     interface = Column(String(255))
 
 
-class DNSDomain(BASE, trafficBase):
+class DNSDomain(BASE, TrafficBase):
     """Represents a DNS domain with availability zone or project info."""
     __tablename__ = 'dns_domains'
     domain = Column(String(512), primary_key=True)
@@ -792,7 +811,7 @@ class DNSDomain(BASE, trafficBase):
     project_id = Column(String(255))
 
 
-class ConsolePool(BASE, trafficBase):
+class ConsolePool(BASE, TrafficBase):
     """Represents pool of consoles on the same physical node."""
     __tablename__ = 'console_pools'
     id = Column(Integer, primary_key=True)
@@ -805,7 +824,7 @@ class ConsolePool(BASE, trafficBase):
     compute_host = Column(String(255))
 
 
-class Console(BASE, trafficBase):
+class Console(BASE, TrafficBase):
     """Represents a console session for an instance."""
     __tablename__ = 'consoles'
     id = Column(Integer, primary_key=True)
@@ -817,7 +836,7 @@ class Console(BASE, trafficBase):
     pool = relationship(ConsolePool, backref=backref('consoles'))
 
 
-class InstanceMetadata(BASE, trafficBase):
+class InstanceMetadata(BASE, TrafficBase):
     """Represents a user-provided metadata key/value pair for an instance"""
     __tablename__ = 'instance_metadata'
     id = Column(Integer, primary_key=True)
@@ -833,7 +852,7 @@ class InstanceMetadata(BASE, trafficBase):
                                 'InstanceMetadata.deleted == False)')
 
 
-class InstanceSystemMetadata(BASE, trafficBase):
+class InstanceSystemMetadata(BASE, TrafficBase):
     """Represents a system-owned metadata key/value pair for an instance"""
     __tablename__ = 'instance_system_metadata'
     id = Column(Integer, primary_key=True)
@@ -850,7 +869,7 @@ class InstanceSystemMetadata(BASE, trafficBase):
                             primaryjoin=primary_join)
 
 
-class InstanceTypeProjects(BASE, trafficBase):
+class InstanceTypeProjects(BASE, TrafficBase):
     """Represent projects associated instance_types"""
     __tablename__ = "instance_type_projects"
     id = Column(Integer, primary_key=True)
@@ -865,7 +884,7 @@ class InstanceTypeProjects(BASE, trafficBase):
                  'InstanceTypeProjects.deleted == False)')
 
 
-class InstanceTypeExtraSpecs(BASE, trafficBase):
+class InstanceTypeExtraSpecs(BASE, TrafficBase):
     """Represents additional specs as key/value pairs for an instance_type"""
     __tablename__ = 'instance_type_extra_specs'
     id = Column(Integer, primary_key=True)
@@ -880,7 +899,7 @@ class InstanceTypeExtraSpecs(BASE, trafficBase):
                  'InstanceTypeExtraSpecs.deleted == False)')
 
 
-class AggregateHost(BASE, trafficBase):
+class AggregateHost(BASE, TrafficBase):
     """Represents a host that is member of an aggregate."""
     __tablename__ = 'aggregate_hosts'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -888,7 +907,7 @@ class AggregateHost(BASE, trafficBase):
     aggregate_id = Column(Integer, ForeignKey('aggregates.id'), nullable=False)
 
 
-class AggregateMetadata(BASE, trafficBase):
+class AggregateMetadata(BASE, TrafficBase):
     """Represents a metadata key/value pair for an aggregate."""
     __tablename__ = 'aggregate_metadata'
     id = Column(Integer, primary_key=True)
@@ -897,7 +916,7 @@ class AggregateMetadata(BASE, trafficBase):
     aggregate_id = Column(Integer, ForeignKey('aggregates.id'), nullable=False)
 
 
-class Aggregate(BASE, trafficBase):
+class Aggregate(BASE, TrafficBase):
     """Represents a cluster of hosts that exists in this zone."""
     __tablename__ = 'aggregates'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -937,7 +956,7 @@ class Aggregate(BASE, trafficBase):
         return dict([(m.key, m.value) for m in self._metadata])
 
 
-class AgentBuild(BASE, trafficBase):
+class AgentBuild(BASE, TrafficBase):
     """Represents an agent build."""
     __tablename__ = 'agent_builds'
     id = Column(Integer, primary_key=True)
@@ -949,7 +968,7 @@ class AgentBuild(BASE, trafficBase):
     md5hash = Column(String(255))
 
 
-class BandwidthUsage(BASE, trafficBase):
+class BandwidthUsage(BASE, TrafficBase):
     """Cache for instance bandwidth usage data pulled from the hypervisor"""
     __tablename__ = 'bw_usage_cache'
     id = Column(Integer, primary_key=True, nullable=False)
@@ -961,28 +980,28 @@ class BandwidthUsage(BASE, trafficBase):
     bw_out = Column(BigInteger)
 
 
-class S3Image(BASE, trafficBase):
+class S3Image(BASE, TrafficBase):
     """Compatibility layer for the S3 image service talking to Glance"""
     __tablename__ = 's3_images'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     uuid = Column(String(36), nullable=False)
 
 
-class VolumeIdMapping(BASE, trafficBase):
+class VolumeIdMapping(BASE, TrafficBase):
     """Compatibility layer for the EC2 volume service"""
     __tablename__ = 'volume_id_mappings'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     uuid = Column(String(36), nullable=False)
 
 
-class SnapshotIdMapping(BASE, trafficBase):
+class SnapshotIdMapping(BASE, TrafficBase):
     """Compatibility layer for the EC2 snapshot service"""
     __tablename__ = 'snapshot_id_mappings'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     uuid = Column(String(36), nullable=False)
 
 
-class SMFlavors(BASE, trafficBase):
+class SMFlavors(BASE, TrafficBase):
     """Represents a flavor for SM volumes."""
     __tablename__ = 'sm_flavors'
     id = Column(Integer(), primary_key=True)
@@ -990,7 +1009,7 @@ class SMFlavors(BASE, trafficBase):
     description = Column(String(255))
 
 
-class SMBackendConf(BASE, trafficBase):
+class SMBackendConf(BASE, TrafficBase):
     """Represents the connection to the backend for SM."""
     __tablename__ = 'sm_backend_config'
     id = Column(Integer(), primary_key=True)
@@ -1000,7 +1019,7 @@ class SMBackendConf(BASE, trafficBase):
     config_params = Column(String(2047))
 
 
-class SMVolume(BASE, trafficBase):
+class SMVolume(BASE, TrafficBase):
     __tablename__ = 'sm_volume'
     id = Column(String(36), ForeignKey(Volume.id), primary_key=True)
     backend_id = Column(Integer, ForeignKey('sm_backend_config.id'),
@@ -1008,7 +1027,7 @@ class SMVolume(BASE, trafficBase):
     vdi_uuid = Column(String(255))
 
 
-class InstanceFault(BASE, trafficBase):
+class InstanceFault(BASE, TrafficBase):
     __tablename__ = 'instance_faults'
     id = Column(Integer(), primary_key=True, autoincrement=True)
     instance_uuid = Column(String(36),
@@ -1019,14 +1038,14 @@ class InstanceFault(BASE, trafficBase):
     details = Column(Text)
 
 
-class InstanceIdMapping(BASE, trafficBase):
+class InstanceIdMapping(BASE, TrafficBase):
     """Compatability layer for the EC2 instance service"""
     __tablename__ = 'instance_id_mappings'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     uuid = Column(String(36), nullable=False)
 
 
-class TaskLog(BASE, trafficBase):
+class TaskLog(BASE, TrafficBase):
     """Audit log for background periodic tasks"""
     __tablename__ = 'task_log'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -1039,7 +1058,7 @@ class TaskLog(BASE, trafficBase):
     task_items = Column(Integer(), default=0)
     errors = Column(Integer(), default=0)
 
-class OperationLog(BASE, trafficBase):
+class OperationLog(BASE, TrafficBase):
     __tablename__ = "operation_log"
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     client_ip = Column(String(255), nullable=False)
