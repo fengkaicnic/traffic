@@ -847,114 +847,6 @@ class ComputeManager(manager.SchedulerDependentManager):
         self.driver.destroy(instance, self._legacy_nw_info(network_info),
                             block_device_info)
 
-    @manager.periodic_task
-    def _heal_instance_info_cache(self, context):
-        """Called periodically.  On every call, try to update the
-        info_cache's network information for another instance by
-        calling to the network manager.
-
-        This is implemented by keeping a cache of uuids of instances
-        that live on this host.  On each call, we pop one off of a
-        list, pull the DB record, and try the call to the network API.
-        If anything errors, we don't care.  It's possible the instance
-        has been deleted, etc.
-        """
-        heal_interval = FLAGS.heal_instance_info_cache_interval
-        if not heal_interval:
-            return
-        curr_time = time.time()
-        if self._last_info_cache_heal + heal_interval > curr_time:
-            return
-        self._last_info_cache_heal = curr_time
-
-        instance_uuids = getattr(self, '_instance_uuids_to_heal', None)
-        instance = None
-
-        while not instance or instance['host'] != self.host:
-            if instance_uuids:
-                try:
-                    instance = self.db.instance_get_by_uuid(context,
-                        instance_uuids.pop(0))
-                except exception.InstanceNotFound:
-                    # Instance is gone.  Try to grab another.
-                    continue
-            else:
-                # No more in our copy of uuids.  Pull from the DB.
-                db_instances = self.db.instance_get_all_by_host(
-                        context, self.host)
-                if not db_instances:
-                    # None.. just return.
-                    return
-                instance = db_instances.pop(0)
-                instance_uuids = [inst['uuid'] for inst in db_instances]
-                self._instance_uuids_to_heal = instance_uuids
-
-        # We have an instance now and it's ours
-        try:
-            # Call to network API to get instance info.. this will
-            # force an update to the instance's info_cache
-            self.network_api.get_instance_nw_info(context, instance)
-            LOG.debug(_('Updated the info_cache for instance'),
-                      instance=instance)
-        except Exception:
-            # We don't care about any failures
-            pass
-
-    #��ʱ���񣬴���������ʱ��ʵ�� -- �ٴγ���������
-    @manager.periodic_task
-    def _poll_rebooting_instances(self, context):
-        def timeout_instance(instance, timeout):
-            old_enough = timeutils.is_older_than(instance.updated_at,timeout)
-            if old_enough:
-                return True
-            return False
-        if FLAGS.reboot_timeout > 0:
-            #task_state�ֶβ�ȡ��������ƥ��
-            rebooting_instances = self.db.instance_get_all_by_filters(context,{'task_state':"rebooting",'host':self.host})
-            for instance in rebooting_instances:
-                if timeout_instance(instance, FLAGS.reboot_timeout):
-                    LOG.info(_("Hard rebooting instance"), instance=instance)
-                    self.reboot_instance(context, instance, reboot_type="HARD")
-
-    @manager.periodic_task
-    def _poll_rescued_instances(self, context):
-        if FLAGS.rescue_timeout > 0:
-            self.driver.poll_rescued_instances(FLAGS.rescue_timeout)
-
-
-    @manager.periodic_task
-    def _poll_bandwidth_usage(self, context, start_time=None, stop_time=None):
-        if not start_time:
-            start_time = utils.last_completed_audit_period()[1]
-
-        curr_time = time.time()
-        if (curr_time - self._last_bw_usage_poll >
-                FLAGS.bandwidth_poll_interval):
-            self._last_bw_usage_poll = curr_time
-            LOG.info(_("Updating bandwidth usage cache"))
-
-            instances = self.db.instance_get_all_by_host(context, self.host)
-            try:
-                bw_usage = self.driver.get_all_bw_usage(instances, start_time,
-                        stop_time)
-            except NotImplementedError:
-                # NOTE(mdragon): Not all hypervisors have bandwidth polling
-                # implemented yet.  If they don't it doesn't break anything,
-                # they just don't get the info in the usage events.
-                return
-
-            refreshed = timeutils.utcnow()
-            for usage in bw_usage:
-                # Allow switching of greenthreads between queries.
-                greenthread.sleep(0)
-                self.db.bw_usage_update(context,
-                                        usage['uuid'],
-                                        usage['mac_address'],
-                                        start_time,
-                                        usage['bw_in'], usage['bw_out'],
-                                        last_refreshed=refreshed)
-
-    @manager.periodic_task
     def _report_driver_status(self, context):
         curr_time = time.time()
         if curr_time - self._last_host_check > FLAGS.host_state_interval:
@@ -968,7 +860,6 @@ class ComputeManager(manager.SchedulerDependentManager):
             self.update_service_capabilities(capabilities)
 
 
-    @manager.periodic_task
     def update_available_resource(self, context):
         """See driver.get_available_resource()
 
@@ -985,8 +876,6 @@ class ComputeManager(manager.SchedulerDependentManager):
             new_resource_tracker_dict[nodename] = rt
         self._resource_tracker_dict = new_resource_tracker_dict 
 
-    @manager.periodic_task(
-        ticks_between_runs=FLAGS.running_deleted_instance_poll_interval)
     def _cleanup_running_deleted_instances(self, context):
         """Cleanup any instances which are erroneously still running after
         having been deleted.
@@ -1096,7 +985,6 @@ class ComputeManager(manager.SchedulerDependentManager):
 
     #TODO:fix this bug
     #this task will remove some base image in use
-#    @manager.periodic_task(
 #        ticks_between_runs=FLAGS.image_cache_manager_interval)
     def _run_image_cache_manager_pass(self, context):
         """Run a single pass of the image cache manager."""
