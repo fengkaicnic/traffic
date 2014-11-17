@@ -398,11 +398,11 @@ class Service(object):
         # Consume from all consumers in a thread
         self.conn.consume_in_thread()
 
-        if self.report_interval:
+        '''if self.report_interval:
             pulse = utils.LoopingCall(self.report_state)
             pulse.start(interval=self.report_interval,
                         initial_delay=self.report_interval)
-            self.timers.append(pulse)
+            self.timers.append(pulse)'''
 
         if self.periodic_interval:
             if self.periodic_fuzzy_delay:
