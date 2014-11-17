@@ -369,13 +369,14 @@ class Service(object):
         self.manager.init_host()
         self.model_disconnected = False
         ctxt = context.get_admin_context()
-        try:
+        
+        '''        try:
             service_ref = db.service_get_by_args(ctxt,
                                                  self.host,
                                                  self.binary)
             self.service_id = service_ref['id']
         except exception.NotFound:
-            self._create_service_ref(ctxt)
+            self._create_service_ref(ctxt)'''
 
         if 'traffic-compute' == self.binary:
             self.manager.update_available_resource(ctxt)

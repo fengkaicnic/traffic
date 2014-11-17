@@ -473,7 +473,6 @@ def service_create(context, values):
     service_ref.save()
     return service_ref
 
-
 @require_admin_context
 def service_update(context, service_id, values):
     session = get_session()
