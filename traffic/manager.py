@@ -62,10 +62,11 @@ from traffic.openstack.common.plugin import pluginmanager
 from traffic.openstack.common.rpc import dispatcher as rpc_dispatcher
 from traffic.scheduler import rpcapi as scheduler_rpcapi
 from traffic import version
-
+from gettext import gettext
 
 FLAGS = flags.FLAGS
 
+_ = gettext
 
 LOG = logging.getLogger(__name__)
 
