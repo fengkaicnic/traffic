@@ -745,7 +745,7 @@ def tfilter_create(context, values, session=None):
 @require_context
 def get_ip_by_instance(context, instanceid):
     session = get_session()
-    result = session.execute('select ip from fixed_ips where instance_uuid="'+instanceid+'"').first()
+    result = session.execute('select address from fixed_ips where instance_uuid="'+instanceid+'"').first()
     return result
                 
 @require_context
