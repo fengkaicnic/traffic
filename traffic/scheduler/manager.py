@@ -36,6 +36,7 @@ from traffic.openstack.common import log as logging
 from traffic.openstack.common.notifier import api as notifier
 from traffic.openstack.common.rpc import common as rpc_common
 from traffic.openstack.common import rpc
+from traffic.compute import rpcapi as compute_rpcapi
 
 
 LOG = logging.getLogger(__name__)
@@ -77,6 +78,7 @@ class SchedulerManager(manager.Manager):
         '''if not scheduler_driver:
             scheduler_driver = FLAGS.scheduler_driver
         self.driver = importutils.import_object(scheduler_driver)'''
+        self.compute_rpcapi = compute_rpcapi.ComputeAPI()
         super(SchedulerManager, self).__init__(*args, **kwargs)
 
     def update_service_capabilities(self, context, service_name,
