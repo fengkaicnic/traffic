@@ -43,6 +43,7 @@ class API(base.Base):
     def create(self, context, ip, instance_id, band, prio, host):
 #         compute_rpcapi.create_traffic(context, ip, instance_id, band, prio)
         #self.compute_rpcapi.create_traffic(context, ip, instance_id, band, prio)
+        ip = self.get_by_ip(context, instance_id)
         self.scheduler_rpcapi.create_traffic(context, ip, instance_id, band, prio, host)
         
     def show(self, context, instance_id):
@@ -73,4 +74,7 @@ class API(base.Base):
     def update(self, context, server_id, band):
         self.delete(context, server_id)
         self.create(context, server_id, band)
+        
+    def get_ip_by_instance(self, instanceid):
+        return self.db.
             

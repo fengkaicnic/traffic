@@ -34,8 +34,7 @@ class Controller(wsgi.Controller):
         instance_id = body['instance_id']
         band = body['band']
         prio = body['prio']
-        ip = body['ip']
-        self._compute_api.create(context, ip, instance_id, band, prio)
+        self._compute_api.create(context, instance_id, band, prio)
         raise exc.HTTPNotImplemented()
     
     def delete(self, req, instance_id, id):
