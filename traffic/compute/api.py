@@ -40,10 +40,11 @@ class API(base.Base):
         super(API, self).__init__(**kwargs)
 
          
-    def create(self, context, ip, instance_id, band, prio, host):
+    def create(self, context, instance_id, band, prio):
 #         compute_rpcapi.create_traffic(context, ip, instance_id, band, prio)
         #self.compute_rpcapi.create_traffic(context, ip, instance_id, band, prio)
         ip = self.get_ip_by_instance(context, instance_id)
+        host = self.get_host_by_instance(context, instance_id)
         self.scheduler_rpcapi.create_traffic(context, ip, instance_id, band, prio, host)
         
     def show(self, context, instance_id):
@@ -75,6 +76,9 @@ class API(base.Base):
         self.delete(context, server_id)
         self.create(context, server_id, band)
         
-    def get_ip_by_instance(self,context, instanceid):
-        return self.db.get_ip_by_instance(instanceid)
+    def get_ip_by_instance(self, context, instanceid):
+        return self.db.get_ip_by_instance(context, instanceid)
+    
+    def get_host_by_instance(self, context, instanceid):
+        return self.db.get_host_by_instance(context, instanceid)
             

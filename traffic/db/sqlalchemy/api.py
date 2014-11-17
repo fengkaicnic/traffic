@@ -746,6 +746,11 @@ def tfilter_create(context, values, session=None):
 def get_ip_by_instace(context, instanceid):
     result = model_query(context, models.FixedIp, project_only=True).\
                 filter_by(instance_uuid=instanceid).first()
+                
+@require_context
+def get_host_by_instace(context, instanceid):
+    result = model_query(context, models.Instance, project_only=True).\
+                filter_by(uuid=instanceid).first()
 
 @require_context
 def tqdisc_get(context, id):
