@@ -105,7 +105,7 @@ class TrafficBase(object):
         return local.iteritems()
 
 
-class Service_ECCP(BASE, TrafficBase):
+'''class Service_ECCP(BASE, TrafficBase):
     """Represents a running service on a host."""
 
     __tablename__ = 'services'
@@ -115,7 +115,7 @@ class Service_ECCP(BASE, TrafficBase):
     topic = Column(String(255))
     report_count = Column(Integer, nullable=False, default=0)
     disabled = Column(Boolean, default=False)
-#    availability_zone = Column(String(255), default='traffic')
+#    availability_zone = Column(String(255), default='traffic')'''
 
 class Service(BASE, TrafficBase):
     """Represents a running service on a host."""
