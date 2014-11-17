@@ -134,7 +134,11 @@ global_opts = [
     cfg.StrOpt('scheduler_topic',
                default='scheduler',
                help='the topic scheduler nodes listen on'),
-    
+               
+    cfg.StrOpt('scheduler_manager',
+               default='traffic.scheduler.manager.SchedulerManager',
+               help='full class name for the Manager for scheduler'),
+               
     cfg.StrOpt('host',
                default=socket.gethostname(),
                help='Name of this node.  This can be an opaque identifier.  '
