@@ -277,8 +277,8 @@ class ComputeManager(manager.SchedulerDependentManager):
 
 
 
-    def create_traffic(self, context, ip, instanceid, band, prio):
-        classid = self.tqdisc_api.create(context, instanceid, band, prio)
+    def create_traffic(self, context, ip, instance_id, band, prio):
+        classid = self.tqdisc_api.create(context, instance_id, band, prio)
         self.tfilter_api.create(context, ip, classid, prio)
 
 
