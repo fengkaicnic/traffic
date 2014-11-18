@@ -726,6 +726,12 @@ def tqdisc_create(context, values, session=None):
     return tqdisc_ref['classid']     
 
 @require_context
+def tqdisc_get_classid(context):
+    session = get_session()
+    result = session.execute('select classid from tqdisc order by id limit 1').first()
+    return result
+
+@require_context
 def tfilter_get_last_handle(context):
     result = model_query(context, models.Tfilter, project_only=True).last()
     return result['handle']

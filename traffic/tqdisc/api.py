@@ -10,7 +10,11 @@ class API(base.Base):
         self._execute = execute
         
     def create(self, context, instance_id, band, prio=1):
-        classid = self.db.get_classid()
+        classid = self.db.get_classid(context)
+        if not classid:
+            classid = '0'
+        else: 
+            classid = classid[0]
         new_id = int(classid) + 1
         new_class_id = '10:' + str(new_id)
         bands = band + 'Mbit'
