@@ -36,7 +36,7 @@ def main():
                                           classid varchar(20),
                                           ip varchar(25),
                                           host varchar(20),
-                                          band int,
+                                          band varchar(15),
                                           prio int)'''
     
     cursor.execute(tqdisc_sql)
