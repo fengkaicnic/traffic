@@ -3,6 +3,7 @@ from traffic import rootwrap
 from traffic import utils
 from traffic import db
 from traffic.db import base
+import os
 
 class API(object):
     
@@ -12,9 +13,12 @@ class API(object):
     def create(self, context, ip, class_id, prio=1):
         ips = ip + '/32'
         cmd = ['tc filter add dev eth0 parent 10: protocol ip prio', prio ,'u32 match ip src', ips, 'flowid', class_id]
-        self._execute(cmd)
+        cmd = map(str, cmd)
+        #self._execute(cmd)
+        
         handle = self.db.tfilter_get_last_handle(context)
         self.db.tfilter_create(context, ip, class_id, handle, prio)
+        os.system(''.join(cmd))
         
     def delete(self, context, handle, prio ):       
         handle_r = '800::' + handle

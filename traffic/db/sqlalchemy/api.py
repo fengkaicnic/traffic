@@ -728,7 +728,7 @@ def tqdisc_create(context, values, session=None):
 @require_context
 def tqdisc_get_classid(context):
     session = get_session()
-    result = session.execute('select classid from tqdisc order by id asc limit 1').first()
+    result = session.execute('select classid from tqdisc order by id desc limit 1').first()
     return result
 
 @require_context
