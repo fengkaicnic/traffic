@@ -227,7 +227,6 @@ class SchedulerDependentManager(Manager):
             capabilities = [capabilities]
         self.last_capabilities = capabilities
 
-    @periodic_task
     def _publish_service_capabilities(self, context):
         """Pass data back to the scheduler at a periodic interval."""
         if self.last_capabilities:
