@@ -89,9 +89,9 @@ def not_equal(*values):
 
 ###################
 
-def tqdisc_create(context, instanceid, classid, prio, band):
+def tqdisc_create(context, values):
     'create tqdisc'
-    return IMPL.tqdisc_create(context, instanceid, classid, prio, band)
+    return IMPL.tqdisc_create(context, values)
 
 def tqdisc_get(context, id):
     'get a tqdisc'
