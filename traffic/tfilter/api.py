@@ -5,7 +5,7 @@ from traffic import db
 from traffic.db import base
 import os
 
-class API(object):
+class API(base.Base):
     
     def set_execute(self, execute):        
         self._execute = execute
