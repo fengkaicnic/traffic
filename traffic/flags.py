@@ -121,7 +121,7 @@ global_opts = [
                default=3600,
                help='timeout before idle sql connections are reaped'),
     cfg.StrOpt('compute_topic',
-               default='traffic',
+               default='compute',
                help='the topic compute nodes listen on'),
     cfg.BoolOpt('monkey_patch',
                 default=False,
