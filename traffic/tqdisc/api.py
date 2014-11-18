@@ -18,13 +18,13 @@ class API(base.Base):
         new_id = int(classid) + 1
         new_class_id = '10:' + str(new_id)
         bands = band + 'Mbit'
-        cmd = ['tc class add dev eth0 parent 10:1 classid', new_class_id, 'htb rate', bands, 'prio', prio]
+        cmd = ['tc class add dev eth0 parent 10:1 classid', new_class_id, 'htb rate', bands, 'prio', str(prio)]
         self.db.tqdisc_create(context,
                               {'instanceid': instance_id,
                                'classid': new_class_id,
                                'prio': prio, 
                                'band': bands})
-        self._execute(cmd)
+        self._execute('tc class add dev eth0 parent 10:1 classid', new_class_id, 'htb rate', bands, 'prio', prio)
         return new_class_id
         
     def get(self, context, id):
