@@ -12,10 +12,10 @@ class API(base.Base):
     def create(self, context, instance_id, band, prio=1):
         classid = self.db.get_classid(context)
         if not classid:
-            classid = '0'
+            classid = '10:0'
         else: 
             classid = classid[0]
-        new_id = int(classid) + 1
+        new_id = int(classid.split(':')[1]) + 1
         new_class_id = '10:' + str(new_id)
         bands = band + 'Mbit'
         cmd = ['tc class add dev eth0 parent 10:1 classid', new_class_id, 'htb rate', bands, 'prio', str(prio)]
