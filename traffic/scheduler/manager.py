@@ -100,7 +100,7 @@ class SchedulerManager(manager.Manager):
                             locals())
                 db.volume_update(context, volume_id, {'status': 'error'})
                 
-    def create_traffic(self, context, ip, instance_id, band, prio):
+    def create_traffic(self, context, ip, instance_id, band, prio=1):
         
         self.compute_rpcapi.create_traffic(context, ip=ip,
                 instance_id=instance_id,

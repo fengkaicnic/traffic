@@ -461,7 +461,6 @@ class ComputeAPI(traffic.openstack.common.rpc.proxy.RpcProxy):
     
     def create_traffic(self, ctxt, ip, instance_id, band, prio):
         
-        host = db.get_host_by_instance_id(ctxt, instance_id)
         self.cast(ctxt, self.make_msg('create_traffic', ip=ip, instance_id=instance_id,
                                       band=band, prio=prio), 
                   topic=_compute_topic(self.topic, ctxt, host, None))
