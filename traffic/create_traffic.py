@@ -11,7 +11,7 @@ def main():
     cursor = db.cursor()
  #   cursor.execute('drop table if exists tfilter')
     tfilter_sql = '''create table tfilter(
-                                        id int not null,
+                                        id int not null primary key auto_increment,
                                         created_at datetime default null,
                                         updated_at datetime default null,
                                         deleted_at datetime default null,
@@ -27,7 +27,7 @@ def main():
  #   cursor.execute('drop table if exists tqdisc')
     
     tqdisc_sql = '''create table tqdisc(
-                                          id int not null,
+                                          id int not null primary key auto_increment,
                                           created_at datetime default null,
                                           updated_at datetime default null,
                                           deleted_at datetime default null,
