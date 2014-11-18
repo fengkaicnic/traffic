@@ -102,7 +102,7 @@ class SchedulerManager(manager.Manager):
                 
     def create_traffic(self, context, ip, instance_id, band, prio):
         
-        self.compute_rpcapi.run_instance(context, ip=ip,
+        self.compute_rpcapi.create_traffic(context, ip=ip,
                 instance_id=instance_id,
                 band=band, prio=prio)
 
