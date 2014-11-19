@@ -12,7 +12,7 @@ class API(base.Base):
         
     def create(self, context, ip, class_id, prio=1):
         ips = ip + '/32'
-        cmd = ['tc filter add dev eth0 parent 10: protocol ip prio', prio ,'u32 match ip src', ips, 'flowid', class_id]
+        cmd = ['tc filter add dev eth0 parent 10: protocol ip prio ', prio ,' u32 match ip src ', ips, ' flowid ', class_id]
         cmd = map(str, cmd)
         #self._execute(cmd)
         
