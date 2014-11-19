@@ -734,7 +734,7 @@ def tqdisc_get_classid(context):
 @require_context
 def tfilter_get_last_handle(context):
     session = get_session()
-    result = session.execute('select handle from tfilter order by id desc limit1').first()
+    result = session.execute('select handle from tfilter order by id desc limit 1').first()
     return result
 
 @require_context

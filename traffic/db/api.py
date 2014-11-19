@@ -133,7 +133,7 @@ def get_host_by_instance_id(context, instance_id):
 
 def tfilter_get_last_handle(context):
     'get a last handle of tfilter'
-    return IMPL.tfilter_get_last_handle()
+    return IMPL.tfilter_get_last_handle(context)
 
 def tfilter_create(context, ip, classid, handle, prio):
     'create a tfilter'
