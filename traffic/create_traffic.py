@@ -16,7 +16,7 @@ def main():
                                         updated_at datetime default null,
                                         deleted_at datetime default null,
                                         deleted varchar(36),
-                                        classid int,
+                                        classid varchar(10),
                                         handle int,
                                         ip varchar(25),
                                         flowid varchar(10),
