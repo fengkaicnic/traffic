@@ -19,6 +19,8 @@ class API(base.Base):
         handle = self.db.tfilter_get_last_handle(context)
         if not handle:
             handle = 799
+        else:
+            handle = handle[0]
         self.db.tfilter_create(context, 
                                {'ip': ip, 
                                 'classid': class_id,
