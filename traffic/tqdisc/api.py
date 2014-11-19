@@ -14,6 +14,8 @@ class API(base.Base):
         classid = self.db.get_classid(context)
         if not classid:
             classid = '10:1'
+            cmds = 'tc class add dev eth0 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit'
+            os.system(cmds)
         else: 
             classid = classid[0]
         new_id = int(classid.split(':')[1]) + 1
