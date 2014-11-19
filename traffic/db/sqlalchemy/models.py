@@ -154,7 +154,7 @@ class Tfilter(BASE, TrafficBase):
     classid = Column(Integer)
     handle = Column(Integer)
     ip = Column(String(255))
-    flow_id = Column(String(255))
+    flowid = Column(String(255))
     prio = Column(Integer)
 
 class ComputeNode(BASE, TrafficBase):

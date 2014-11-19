@@ -17,7 +17,12 @@ class API(base.Base):
         #self._execute(cmd)
         
         handle = self.db.tfilter_get_last_handle(context)
-        self.db.tfilter_create(context, ip, class_id, handle, prio)
+        self.db.tfilter_create(context, 
+                               {'ip': ip, 
+                                'classid': class_id,
+                                'flowid': class_id, 
+                                'handle': handle, 
+                                'prio': prio})
         os.system(''.join(cmd))
         
     def delete(self, context, handle, prio ):       
