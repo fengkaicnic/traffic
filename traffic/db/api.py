@@ -135,9 +135,9 @@ def tfilter_get_last_handle(context):
     'get a last handle of tfilter'
     return IMPL.tfilter_get_last_handle(context)
 
-def tfilter_create(context, ip, classid, handle, prio):
+def tfilter_create(context, values):
     'create a tfilter'
-    return IMPL.tfilter_create(context, ip, classid, handle, prio)
+    return IMPL.tfilter_create(context, values)
 
 def tfilter_get_by_classid(context, classid):
     'get a tfilter by classid'
