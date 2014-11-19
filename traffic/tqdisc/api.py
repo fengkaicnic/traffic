@@ -13,7 +13,7 @@ class API(base.Base):
     def create(self, context, instance_id, band, prio=1):
         classid = self.db.get_classid(context)
         if not classid:
-            classid = '10:0'
+            classid = '10:1'
         else: 
             classid = classid[0]
         new_id = int(classid.split(':')[1]) + 1
