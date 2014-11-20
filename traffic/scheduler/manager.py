@@ -104,7 +104,7 @@ class SchedulerManager(manager.Manager):
         
         self.compute_rpcapi.create_traffic(context, ip=ip,
                 instance_id=instance_id,
-                band=band, mac=mac, prio=prio, host=host)
+                band=band, host=host, mac=mac, prio=prio)
 
     # NOTE (masumotok) : This method should be moved to traffic.api.ec2.admin.
     # Based on bexar design summit discussion,
