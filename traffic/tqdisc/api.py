@@ -16,7 +16,15 @@ class API(base.Base):
         virnt = eht.read().rstrip()
         cmds = ['tc qdisc add dev ', virnt, 'handle ffff: ingress']
         cmdfil = ['tc filter add dev ', virnt, 'parent ffff: protocol ip prio 50 u32 match ip src 0.0.0.0/0 police rate ']
-        
+        cmdfil.append(band)
+        cmdfil.append('mbit burst 10k drop flowid :1')
+        self.db.tqdisc_create(context,
+                              {'instanceid': instance_id,
+                               'classid': '',
+                               'prio': prio, 
+                               'band': band})
+        os.system(''.join(cmds))
+        os.system(''.join(cmdfil))
         
     def create_bk(self, context, instance_id, band, mac, prio=1):
         classid = self.db.get_classid(context)
