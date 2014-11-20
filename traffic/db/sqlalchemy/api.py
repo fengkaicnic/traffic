@@ -765,7 +765,7 @@ def get_host_by_instance(context, instanceid):
 @require_context
 def get_mac_by_instance(context, instanceid):
     session = get_session()
-    result = session.execute('select address from virtual_interfaces where uuid="'+instanceid+'"').first()
+    result = session.execute('select address from virtual_interfaces where instance_uuid="'+instanceid+'"').first()
     return result 
 
 @require_context
