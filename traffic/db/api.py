@@ -120,6 +120,9 @@ def get_ip_by_instance(context, instanceid):
 def get_host_by_instance(context, instanceid):
     return IMPL.get_host_by_instance(context, instanceid)
 
+def get_mac_by_instance(context, instanceid):
+    return IMPL.get_mac_by_instance(context, instanceid)
+
 def tqdisc_delete(context, id):
     'delete a tqdisc'
     return IMPL.tqdisc_delete(context, id)

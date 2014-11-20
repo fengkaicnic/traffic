@@ -763,6 +763,12 @@ def get_host_by_instance(context, instanceid):
     return result
 
 @require_context
+def get_mac_by_instance(context, instanceid):
+    session = get_session()
+    result = session.execute('select address from virtual_interfaces where uuid="'+instanceid+'"').first()
+    return result 
+
+@require_context
 def tqdisc_get(context, id):
     result = model_query(context, models.Tqdisc, project_only=True).\
                  filter_by(id=id).\

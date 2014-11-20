@@ -100,11 +100,11 @@ class SchedulerManager(manager.Manager):
                             locals())
                 db.volume_update(context, volume_id, {'status': 'error'})
                 
-    def create_traffic(self, context, ip, instance_id, band, host, prio=1):
+    def create_traffic(self, context, ip, instance_id, band, host, mac, prio=1):
         
         self.compute_rpcapi.create_traffic(context, ip=ip,
                 instance_id=instance_id,
-                band=band, prio=prio, host=host)
+                band=band, mac=mac, prio=prio, host=host)
 
     # NOTE (masumotok) : This method should be moved to traffic.api.ec2.admin.
     # Based on bexar design summit discussion,
