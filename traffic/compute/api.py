@@ -82,4 +82,7 @@ class API(base.Base):
     
     def get_host_by_instance(self, context, instanceid):
         return self.db.get_host_by_instance(context, instanceid)
+    
+    def get_mac_by_instance(self, context, instanceid):
+        return self.db.get_mac_by_instance(context, instanceid)
             
