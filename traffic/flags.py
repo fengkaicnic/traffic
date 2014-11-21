@@ -121,14 +121,14 @@ global_opts = [
                default=3600,
                help='timeout before idle sql connections are reaped'),
     cfg.StrOpt('compute_topic',
-               default='compute',
+               default='traffic-compute',
                help='the topic compute nodes listen on'),
     cfg.BoolOpt('monkey_patch',
                 default=False,
                 help='Whether to log monkey patching'),
                
     cfg.StrOpt('scheduler_topic',
-               default='scheduler',
+               default='traffic-scheduler',
                help='the topic scheduler nodes listen on'),
     
     cfg.StrOpt('compute_manager',

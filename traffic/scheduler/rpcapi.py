@@ -74,7 +74,6 @@ class SchedulerAPI(traffic.openstack.common.rpc.proxy.RpcProxy):
         
     def create_traffic(self, ctxt, ip, instance_id, band, host, mac, prio, *args, **kwargs):
         
-        msg_topic = '%s.%s' % (self.topic, host)
         return self.cast(ctxt, self.make_msg('create_traffic',
                     ip=ip, instance_id=instance_id, band=band, host=host, mac=mac, prio=prio))        
 
