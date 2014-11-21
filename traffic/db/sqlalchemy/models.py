@@ -143,6 +143,7 @@ class Tqdisc(BASE, TrafficBase):
     instanceid = Column(String(255))
     classid = Column(Integer)
     host = Column(String(255))
+    ip = Column(String(23))
     band = Column(Integer)
     prio = Column(Integer)
     
