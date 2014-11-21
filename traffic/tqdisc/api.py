@@ -11,7 +11,8 @@ class API(base.Base):
         self._execute = execute
         
     def create(self, context, instance_id, band, mac, prio=1):
-        cmdlist = ["ifconfig | grep ", mac, " | awk '{print $1}'"]
+        mac = mac[3:]
+        cmdlist = ["ifconfig | grep ", mac, " | awk \"{print $1}\""]
         eht = os.popen("".join(cmdlist))
         virnt = eht.read().rstrip()
         cmds = ['tc qdisc add dev ', virnt, 'handle ffff: ingress']
