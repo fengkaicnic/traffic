@@ -10,7 +10,7 @@ class API(base.Base):
     def set_execute(self, execute):
         self._execute = execute
         
-    def create(self, context, instance_id, band, mac, prio=1):
+    def create(self, context, instance_id, band, mac, ip, prio=1):
         mac = mac[3:]
         cmdlist = ["ifconfig | grep ", mac, " | awk \'{print $1}\'"]
         eht = os.popen("".join(cmdlist))
@@ -23,6 +23,7 @@ class API(base.Base):
                               {'instanceid': instance_id,
                                'classid': '',
                                'prio': prio, 
+                               'ip': ip,
                                'band': band})
         os.system(''.join(cmds))
         os.system(''.join(cmdfil))
