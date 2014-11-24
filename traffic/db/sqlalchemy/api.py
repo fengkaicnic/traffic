@@ -781,7 +781,15 @@ def tqdisc_get(context, id):
 
 @require_context
 def tqdisc_get_all(context):
-    result = model_query(context, models.Tqdisc, project_only=True).all()
+    
+    session = get_session()
+    result = session.execute('select * from tqdisc').all()
+
+    return result
+
+@require_context
+def tqdisc_get_all_bk(context):
+    result = model_query(context, models.Tqdisc, project_only=False).all()
     
     if not result:
         return None
