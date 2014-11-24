@@ -56,7 +56,8 @@ class API(base.Base):
         results = self.tqdisc_api.get_all(context)
         traffics = []
         for result in results:
-            traffic = dict(result.iteritems())
+#            traffic = dict(result.iteritems())
+            traffic = {'id':result[0], 'instanceid':result[5], 'ip':[7], 'band':result[9]}
             traffics.append(traffic)
         return traffics
         

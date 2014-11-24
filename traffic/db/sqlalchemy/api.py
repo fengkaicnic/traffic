@@ -783,7 +783,7 @@ def tqdisc_get(context, id):
 def tqdisc_get_all(context):
     
     session = get_session()
-    result = session.execute('select * from tqdisc').all()
+    result = session.execute('select * from tqdisc')
 
     return result
 
