@@ -53,8 +53,12 @@ class API(base.Base):
         return result["band"]
     
     def list(self, context):
-        result = self.tqdisc_api.get_all(context)
-        return result
+        results = self.tqdisc_api.get_all(context)
+        traffics = []
+        for result in results:
+            traffic = dict(result.iteritems())
+            traffics.append(traffic)
+        return traffics
         
     def get_by_ip(self, context, ip):
         tfilter = self.tfilter_api.get_by_ip(context, ip)

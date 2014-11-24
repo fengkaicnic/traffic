@@ -63,8 +63,8 @@ class Controller(wsgi.Controller):
          
         if not result:
             return None
-        
-        return result
+        response = self.__view_builder.index(req, result)
+        return response
     
     def show_by_ip(self, req, ip, body):
         context = req.environ['traffic.context']
