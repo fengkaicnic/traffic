@@ -45,6 +45,6 @@ if __name__ == '__main__':
     flags.parse_args(sys.argv)
     logging.setup("traffic")
     utils.monkey_patch()
-    server = service.Service.create(binary='traffic-scheduler')
+    server = service.Service.create(binary='traffic-tscheduler')
     service.serve(server)
     service.wait()

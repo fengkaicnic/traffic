@@ -121,21 +121,21 @@ global_opts = [
                default=3600,
                help='timeout before idle sql connections are reaped'),
     cfg.StrOpt('compute_topic',
-               default='traffic-compute',
+               default='tcompute',
                help='the topic compute nodes listen on'),
     cfg.BoolOpt('monkey_patch',
                 default=False,
                 help='Whether to log monkey patching'),
                
     cfg.StrOpt('scheduler_topic',
-               default='traffic-scheduler',
+               default='tscheduler',
                help='the topic scheduler nodes listen on'),
     
-    cfg.StrOpt('compute_manager',
+    cfg.StrOpt('tcompute_manager',
                default='traffic.compute.manager.ComputeManager',
                help='full class name for the Manager for compute'),
                
-    cfg.StrOpt('scheduler_manager',
+    cfg.StrOpt('tscheduler_manager',
                default='traffic.scheduler.manager.SchedulerManager',
                help='full class name for the Manager for scheduler'),
                

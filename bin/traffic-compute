@@ -43,6 +43,6 @@ if __name__ == '__main__':
     flags.parse_args(sys.argv)
     logging.setup('traffic')
     utils.monkey_patch()
-    server = service.Service.create(binary='traffic-compute')
+    server = service.Service.create(binary='traffic-tcompute')
     service.serve(server)
     service.wait()
