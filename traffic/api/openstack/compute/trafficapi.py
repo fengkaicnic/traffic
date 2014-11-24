@@ -63,7 +63,7 @@ class Controller(wsgi.Controller):
          
         if not result:
             return None
-        response = self.__view_builder.index(req, result)
+        response = self._view_builder.index(req, result)
         return response
     
     def show_by_ip(self, req, ip, body):
