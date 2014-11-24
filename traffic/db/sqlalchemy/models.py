@@ -141,10 +141,10 @@ class Tqdisc(BASE, TrafficBase):
     __tablename__ = 'tqdisc'
     id = Column(Integer, primary_key=True)
     instanceid = Column(String(255))
-    classid = Column(Integer)
+    classid = Column(String(22))
     host = Column(String(255))
     ip = Column(String(23))
-    band = Column(Integer)
+    band = Column(String(22))
     prio = Column(Integer)
     
 class Tfilter(BASE, TrafficBase):
