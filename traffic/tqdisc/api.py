@@ -68,7 +68,19 @@ class API(base.Base):
         result = self.db.tqdisc_get_by_ip(context, ip)
         return result
     
-    def delete(self, context, classid):
+    def delete(self, context, instance_id, mac):
+        mac = mac[3:]
+        cmdlist = ["ifconfig | grep ", mac, " | awk \'{print $1}\'"]
+        eht = os.popen("".join(cmdlist))
+        virnt = eht.read().rstrip()
+        cmd = ['tc qdisc del dev ', virnt, ' root']
+        cmds = ['tc qdisc del dev ', virnt, ' ingress']
+        self.db.tqdisc_delete_by_instanceid(context, instance_id)
+        os.system(''.join(cmd))
+        os.system(''.join(cmds))
+        
+    def delete_bk(self, context, classid):
+        
         cmd = ['tc class del dev eth0 classid ', classid]
         self._execute(cmd)
         self.db.tqdisc_delete(context, classid)

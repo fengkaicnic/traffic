@@ -36,7 +36,7 @@ class Controller(wsgi.Controller):
         prio = body['prio']
         self._compute_api.create(context, instance_id, band, prio)
     
-    def delete(self, req, instance_id, id):
+    def delete(self, req, instance_id):
         context = req.environ['traffic.context']
         self._compute_api.delete(context, instance_id)
     

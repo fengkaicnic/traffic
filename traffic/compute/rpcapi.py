@@ -464,6 +464,11 @@ class ComputeAPI(traffic.openstack.common.rpc.proxy.RpcProxy):
         self.cast(ctxt, self.make_msg('create_traffic', ip=ip, instance_id=instance_id,
                                       band=band, mac=mac, prio=prio), 
                   topic=_compute_topic(self.topic, ctxt, host, None))
+    
+    
+    def delete_traffic(self, ctxt, instance_id, host, mac):
+        self.cast(ctxt, self.make_msg('delete_traffic', instance_id=instance_id, mac=mac,
+                  topic=_compute_topic(self.topic, ctxt, host, None)))
 
     def set_admin_password(self, ctxt, instance, new_pass):
         instance_p = jsonutils.to_primitive(instance)

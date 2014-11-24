@@ -105,6 +105,10 @@ class SchedulerManager(manager.Manager):
         self.compute_rpcapi.create_traffic(context, ip=ip,
                 instance_id=instance_id,
                 band=band, host=host, mac=mac, prio=prio)
+    
+    def delete_traffic(self, context, instance_id, host, mac):
+        self.compute_rpcapi.delete_traffic(context, instance_id=instance_id,
+                        host=host, mac=mac)
 
     # NOTE (masumotok) : This method should be moved to traffic.api.ec2.admin.
     # Based on bexar design summit discussion,

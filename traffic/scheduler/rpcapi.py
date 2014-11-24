@@ -75,7 +75,11 @@ class SchedulerAPI(traffic.openstack.common.rpc.proxy.RpcProxy):
     def create_traffic(self, ctxt, ip, instance_id, band, host, mac, prio, *args, **kwargs):
         
         return self.cast(ctxt, self.make_msg('create_traffic',
-                    ip=ip, instance_id=instance_id, band=band, host=host, mac=mac, prio=prio))        
+                    ip=ip, instance_id=instance_id, band=band, host=host, mac=mac, prio=prio))    
+        
+    def delete_traffic(self, ctxt, instance_id, host, mac):
+        return self.cast(ctxt, self.make_msg('delete_traffic',
+                    instance_id=instance_id, host=host, mac=mac))    
 
     def prep_resize(self, ctxt, instance, instance_type, image,
             request_spec, filter_properties, reservations):

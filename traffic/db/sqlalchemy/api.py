@@ -828,7 +828,11 @@ def tqdisc_delete_by_classid(context, classid):
     with session.begin():
         tqdisc_ref = tqdisc_get_by_classid(context, classid, session)
         tqdisc_ref.delete(session=session)
-        
+@require_context
+def tqdisc_delete_by_instanceid(context, instanceid):
+    session = get_session()
+    session.execute('delete from tqdisc where instanceid=\"'+instanceid+'\"')
+
 @require_context
 def tqdisc_get_host(context, classid):
     session = get_session()

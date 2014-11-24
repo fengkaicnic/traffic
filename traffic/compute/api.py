@@ -62,6 +62,11 @@ class API(base.Base):
         return result["band"]
         
     def delete(self, context, instance_id):
+        host = self.get_host_by_instance(context, instance_id)    
+        mac = self.get_mac_by_instance(context, instance_id)
+        self.scheduler_rpcapi.delete_traffic(context, instance_id, host[0], mac[0])
+        
+    def delete_bk(self, context, instance_id):
         result = self.tqdisc_api.get_by_instance_id(context, instance_id)
         self.tqdisc_api.delete(context, result["classid"])
         tfilter = self.tfilter_api.get(context, result["classid"])

@@ -131,6 +131,9 @@ def tqdisc_delete_by_classid(context, classid):
     'delete a tqdisc by classid'
     return IMPL.tqdisc_delete_by_classid(context, classid)
 
+def tqdisc_delete_by_instanceid(context, instance_id):
+    return IMPL.tqdisc_delete_by_instanceid(context, instance_id)
+
 def get_host_by_instance_id(context, instance_id):
     return IMPL.get_host_by_instance_id(context, instance_id)
 
