@@ -57,7 +57,7 @@ class API(base.Base):
         traffics = []
         for result in results:
 #            traffic = dict(result.iteritems())
-            traffic = {'id':result[0], 'instanceid':result[5], 'ip':result[7], 'band':result[9]}
+            traffic = {'id':result[0], 'instanceid':result[5], 'ip':result[7], 'host':result[8], 'band':result[9]}
             traffics.append(traffic)
         return traffics
         
