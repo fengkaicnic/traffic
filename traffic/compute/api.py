@@ -50,7 +50,7 @@ class API(base.Base):
         
     def show(self, context, instance_id):
         results = self.tqdisc_api.get_by_instance_id(context, instance_id)
-        result = results[0]
+        result = results.first()
         traffic = {'id':result[0], 'instanceid':result[5], 'ip':result[7], 'host':result[8], 'band':result[9]}
         return traffic
     
