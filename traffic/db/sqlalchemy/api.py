@@ -799,7 +799,7 @@ def tqdisc_get_all_bk(context):
 @require_context
 def get_host_by_instance_id(context, instance_id, session=None):
     result = model_query(context, models.Instance, project_only=True).\
-                 filter_by(uuid=instance_id).\
+                 filter_by(instanceid=instance_id).\
                  first()
     
     return result['host']
@@ -816,7 +816,7 @@ def tqdisc_get_by_classid(context, classid):
 
 @require_context
 def tqdisc_get_by_instance_id(context, instanceid):
-    result = model_query(context, models.Tqdisc, project_only=True).\
+    result = model_query(context, models.Tqdisc, project_only=False).\
                  filter_by(instanceid=instanceid).\
                  first()
     if not result:
