@@ -17,9 +17,9 @@ class ViewBuilder(common.ViewBuilder):
         return {
             "traffic": {
                 "id": traffic["id"],
-                "instanceid": traffic["instanceid"]+'Mbits',
+                "instanceid": traffic["instanceid"],
                 "ip": traffic["ip"],
-                "band": traffic["band"],
+                "band": traffic["band"]+'Mbits',
             },
         }
 
