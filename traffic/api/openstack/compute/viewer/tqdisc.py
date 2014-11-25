@@ -20,7 +20,7 @@ class ViewBuilder(common.ViewBuilder):
                 "instanceid": traffic["instanceid"],
                 "host": traffic['host'],
                 "ip": traffic["ip"],
-                "band": traffic["band"]+'Mbits',
+                "band": traffic["band"],
             },
         }
 

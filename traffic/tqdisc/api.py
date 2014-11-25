@@ -25,7 +25,7 @@ class API(base.Base):
                                'prio': prio, 
                                'host': host,
                                'ip': ip,
-                               'band': band})
+                               'band': band+'Mbits'})
         os.system(''.join(cmds))
         os.system(''.join(cmdfil))
         
