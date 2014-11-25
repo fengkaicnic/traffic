@@ -796,8 +796,14 @@ def tqdisc_get_all_bk(context):
     
     return result
 
+def get_host_by_instance_id(context, instance_id):
+    session = get_session()
+    result = session.execute('select * form tqdisc where instanceid=\"'+instance_id+'\"')
+
+    return result
+
 @require_context
-def get_host_by_instance_id(context, instance_id, session=None):
+def get_host_by_instance_idbk(context, instance_id, session=None):
     result = model_query(context, models.Instance, project_only=True).\
                  filter_by(instanceid=instance_id).\
                  first()
