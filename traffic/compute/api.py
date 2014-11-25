@@ -49,8 +49,10 @@ class API(base.Base):
         self.scheduler_rpcapi.create_traffic(context, ip[0], instance_id, band, host[0], mac[0], prio)
         
     def show(self, context, instance_id):
-        result = self.tqdisc_api.get_by_instance_id(context, instance_id)
-        return result["band"]
+        results = self.tqdisc_api.get_by_instance_id(context, instance_id)
+        result = results[0]
+        traffic = {'id':result[0], 'instanceid':result[5], 'ip':result[7], 'host':result[8], 'band':result[9]}
+        return traffic
     
     def list(self, context):
         results = self.tqdisc_api.get_all(context)
