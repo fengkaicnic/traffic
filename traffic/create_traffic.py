@@ -35,7 +35,7 @@ def main():
                                           instanceid varchar(50),
                                           classid varchar(20),
                                           ip varchar(25),
-                                          host varchar(20),
+                                          host varchar(100),
                                           band varchar(15),
                                           prio int)'''
     
