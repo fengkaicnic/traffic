@@ -796,6 +796,7 @@ def tqdisc_get_all_bk(context):
     
     return result
 
+@require_context
 def get_host_by_instance_id(context, instance_id):
     session = get_session()
     result = session.execute('select * form tqdisc where instanceid=\"'+instance_id+'\"')
