@@ -18,7 +18,7 @@ class API(base.Base):
         cmds = ['tc qdisc add dev ', virnt, ' handle ffff: ingress']
         cmdfil = ['tc filter add dev ', virnt, ' parent ffff: protocol ip prio 50 u32 match ip src 0.0.0.0/0 police rate ']
         cmdfil.append(band)
-        cmdfil.append('mbit burst 10k drop flowid :1')
+        cmdfil.append('Mbit burst 10k drop flowid :1')
         self.db.tqdisc_create(context,
                               {'instanceid': instance_id,
                                'classid': '',
