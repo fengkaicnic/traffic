@@ -51,9 +51,9 @@ class Controller(wsgi.Controller):
         
         return result['band']
     
-    def show(self, req, instance_id, body):
+    def show(self, req, body):
         context = req.environ['traffic.context']
-        
+        instance_id = body['instance_id']
         band = self._compute_api.show(context, instance_id)
         return band
     
