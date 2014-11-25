@@ -62,7 +62,7 @@ class Controller(wsgi.Controller):
         result = self._compute_api.list(context)
          
         if not result:
-            return None
+            return {'traffics':{}}
         response = self._view_builder.index(req, result)
         return response
     
