@@ -817,7 +817,7 @@ def tqdisc_get_by_classid(context, classid):
 @require_context
 def tqdisc_get_by_instance_id(context, instance_id):
     session = get_session()
-    result = session.execute('select * form tqdisc where instanceid=\"'+instance_id+'\"')
+    result = session.execute('select * from tqdisc where instanceid=\"'+instance_id+'\"')
 
     return result
 
