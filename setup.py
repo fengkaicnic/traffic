@@ -1,30 +1,41 @@
-#!/usr/bin/env python
-# Copyright (c) 2013 Hewlett-Packard Development Company, L.P.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-# implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+from setuptools import find_packages
+from setuptools import setup
 
-# THIS FILE IS MANAGED BY THE GLOBAL REQUIREMENTS REPO - DO NOT EDIT
-import setuptools
+from traffic.openstack.common.setup import get_cmdclass
+from traffic.openstack.common.setup import parse_requirements
+from traffic.openstack.common.setup import parse_dependency_links
+from traffic.openstack.common.setup import write_requirements
 
-# In python < 2.7.4, a lazy loading of package `pbr` will break
-# setuptools if some other modules registered functions in `atexit`.
-# solution from: http://bugs.python.org/issue15881#msg170215
-try:
-    import multiprocessing  # noqa
-except ImportError:
-    pass
 
-setuptools.setup(
-    setup_requires=['pbr'],
-    pbr=True)
+requires = parse_requirements()
+depend_links = parse_dependency_links()
+
+write_requirements()
+
+setup(name='traffic',
+      version='2014.1',
+      description="Traffic control for OpenStack",
+      license='Apache License (2.0)',
+      author='fk',
+      author_email='fengkai@cnic.cn',
+      url='http://www.openstack.org',
+      cmdclass=get_cmdclass(),
+      packages=find_packages(exclude=['test', 'bin']),
+      include_package_data=True,
+      scripts=['bin/traffic-api'],
+      zip_safe=False,
+      install_requires=requires,
+      dependency_links=depend_links,
+      test_suite='nose.collector',
+      classifiers=[
+          'Environment :: OpenStack',
+          'Intended Audience :: Information Technology',
+          'Intended Audience :: System Administrators',
+          'License :: OSI Approved :: Apache Software License',
+          'Operating System :: POSIX :: Linux',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.7',
+      ],
+      )
+                                                                                      
