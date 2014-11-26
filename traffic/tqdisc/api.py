@@ -10,7 +10,7 @@ class API(base.Base):
     def set_execute(self, execute):
         self._execute = execute
         
-    def create(self, context, instance_id, band, host, mac, ip, prio=1):
+    def create_won(self, context, instance_id, band, host, mac, ip, prio=1):
         mac = mac[3:]
         cmdlist = ["ifconfig | grep ", mac, " | awk \'{print $1}\'"]
         eht = os.popen("".join(cmdlist))
@@ -29,12 +29,17 @@ class API(base.Base):
         os.system(''.join(cmds))
         os.system(''.join(cmdfil))
         
-    def create_bk(self, context, instance_id, band, mac, prio=1):
+    def create(self, context, instance_id, band, host, ip, mac, prio=1):
+        etg = os.popen("tc qdisc list | grep 'qdisc htb 10: dev br100 root'")
+        pclass = etg.read()
+        if not pclass:
+            os.system('tc qdisc add dev eth0 root handle 10: htb default 10')
+            os.system('tc class add dev eth0 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit')
         classid = self.db.get_classid(context)
         if not classid:
-            classid = '10:1'
-            cmds = 'tc class add dev eth0 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit'
-            os.system(cmds)
+            classid = '10:11'
+#            cmds = ['tc class add dev eth0 parent 10:1 classid ', classid, ' htb rate ', band, 'Mbits prio ', str(prio)]
+#            os.system(''.join(cmds))
         else: 
             classid = classid[0]
         new_id = int(classid.split(':')[1]) + 1
@@ -45,6 +50,8 @@ class API(base.Base):
                               {'instanceid': instance_id,
                                'classid': new_class_id,
                                'prio': prio, 
+                               'host': host,
+                               'ip': ip,
                                'band': bands})
 #        self._execute('tc class add dev eth0 parent 10:1 classid', new_class_id, 'htb rate', bands, 'prio', prio)
         os.system(''.join(cmd))
