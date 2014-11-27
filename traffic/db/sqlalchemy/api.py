@@ -873,11 +873,13 @@ def tfilter_get_by_classid(context, classid):
 
 @require_context
 def tfilter_get_by_instance(context, instanceid):
-    result = model_query(context, models.Tfilter, project_only=False).\
-                 filter_by(instanceid=instanceid).\
-                 first()
-    if not result:
-        raise exception.NoTfilter(instanceid=instanceid)
+    session = get_session()
+    result = session.execute('select * from tfilter where instanceid="'+instanceid+'"').first()
+#    result = model_query(context, models.Tfilter, project_only=False).\
+#                 filter_by(instanceid=instanceid).\
+#                 first()
+#    if not result:
+#        raise exception.NoTfilter(instanceid=instanceid)
     return result
     
 @require_context
@@ -930,7 +932,10 @@ def tfilter_delete_by_handle(context, handle):
         tfilter_ref = tfilter_get_by_handle(context, handle, session=session)
         tfilter_ref.delete(session=session)
 
-
+@require_context
+def tfilter_delete_by_instance(context, instanceid):
+    session = get_session()
+    session.execute('delete from tfilter where instanceid="'+instanceid+'"')
 
 
 @require_context

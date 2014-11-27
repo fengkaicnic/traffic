@@ -167,6 +167,9 @@ def tfilter_delete_by_handle(context, handle):
     'delete a filter by handle'
     return IMPL.tfilter_delete_by_handle(context, handle)
 
+def tfilter_delete_by_instance(context, instance_id):
+    return IMPL.tfilter_delete_by_instance(context, instance_id)
+
 def service_destroy(context, instance_id):
     """Destroy the service or raise if it does not exist."""
     return IMPL.service_destroy(context, instance_id)
