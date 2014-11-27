@@ -17,6 +17,7 @@ def main():
                                         deleted_at datetime default null,
                                         deleted varchar(36),
                                         classid varchar(10),
+                                        instanceid varchar(50),
                                         handle int,
                                         ip varchar(25),
                                         flowid varchar(10),

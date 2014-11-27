@@ -101,6 +101,9 @@ def get_classid(context):
     'get a classid'
     return IMPL.tqdisc_get_classid(context)
 
+def get_classid_by_instance(context, instanceid):
+    return IMPL.get_classid_by_instance(context, instanceid)
+
 def tqdisc_get_all(context):
     'get all tqdisc'
     return IMPL.tqdisc_get_all(context)

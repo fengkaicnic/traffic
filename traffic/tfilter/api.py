@@ -10,7 +10,7 @@ class API(base.Base):
     def set_execute(self, execute):        
         self._execute = execute
         
-    def create(self, context, ip, class_id, prio=1):
+    def create(self, context, ip, class_id, instanceid, prio=1):
         ips = ip + '/32'
         cmd = ['tc filter add dev br100 parent 10: protocol ip prio ', prio ,' u32 match ip src ', ips, ' flowid ', class_id]
         cmd = map(str, cmd)
@@ -25,11 +25,13 @@ class API(base.Base):
                                {'ip': ip, 
                                 'classid': class_id,
                                 'flowid': class_id, 
+                                'instance_id': instanceid,
                                 'handle': handle+1, 
                                 'prio': prio})
         os.system(''.join(cmd))
         
-    def delete(self, context, handle, prio ):       
+    def delete(self, context, instanceid):       
+        self.db.tfilter_get_by_instance(context, instanceid)
         handle_r = '800::' + handle
         cmd = ['tc filter del dev eth0 parent 10: prio', prio, 'handle', handle_r]
         self._execute(cmd)

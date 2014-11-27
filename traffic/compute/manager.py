@@ -278,11 +278,11 @@ class ComputeManager(manager.SchedulerDependentManager):
 
 
     def create_traffic(self, context, ip, instance_id, band, host, mac, prio):
-        classid = self.tqdisc_api.create(context, instance_id, band, host, mac, ip, prio)
-        self.tfilter_api.create(context, ip, classid, prio)
+        classid = self.tqdisc_api.create(context, instance_id, band, host, ip, mac, prio)
+        self.tfilter_api.create(context, ip, classid, instance_id)
 
-    def delete_traffic(self, context, instance_id, mac):
-        self.tqdisc_api.delete(context, instance_id, mac)
+    def delete_traffic(self, context, instance_id):
+        self.tqdisc_api.delete(context, instance_id)
         self.tfilter_api.delete(context, instance_id)
 
     def _deallocate_network(self, context, instance):
