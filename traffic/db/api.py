@@ -152,6 +152,9 @@ def tfilter_get_by_classid(context, classid):
     'get a tfilter by classid'
     return IMPL.tfilter_get_by_classid(context, classid)
 
+def tfilter_get_by_instance(context, instanceid):
+    return IMPL.tfilter_get_by_instance(context, instanceid)
+
 def tfilter_get(context, id):
     'get a tfilter'
     return IMPL.tfilter_get(context, id)

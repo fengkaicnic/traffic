@@ -152,9 +152,10 @@ class Tfilter(BASE, TrafficBase):
     '''tfilter table of the service'''
     __tablename__ = 'tfilter'
     id = Column(Integer, primary_key=True)
-    classid = Column(Integer)
+    classid = Column(String(50))
     handle = Column(Integer)
     ip = Column(String(255))
+    instanceid= Column(String(50))
     flowid = Column(String(255))
     prio = Column(Integer)
 

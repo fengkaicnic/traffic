@@ -870,6 +870,15 @@ def tfilter_get_by_classid(context, classid):
     if not result:
         raise exception.NoTfilter(classid=classid)
     return result                 
+
+@require_context
+def tfilter_get_by_instance(context, instanceid):
+    result = model_query(context, models.Tfilter, project_only=False).\
+                 filter_by(instanceid=instanceid).\
+                 first()
+    if not result:
+        raise exception.NoTfilter(instanceid=instanceid)
+    return result
     
 @require_context
 def tfilter_get(context, id):
