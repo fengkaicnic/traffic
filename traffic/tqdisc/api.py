@@ -37,7 +37,7 @@ class API(base.Base):
             os.system('tc class add dev br100 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit')
         classid = self.db.get_classid(context)
         if not classid:
-            classid = '10:11'
+            classid = '10:10'
 #            cmds = ['tc class add dev eth0 parent 10:1 classid ', classid, ' htb rate ', band, 'Mbits prio ', str(prio)]
 #            os.system(''.join(cmds))
         else: 
