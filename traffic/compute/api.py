@@ -46,7 +46,7 @@ class API(base.Base):
         ip = self.get_ip_by_instance(context, instance_id)
         host = self.get_host_by_instance(context, instance_id)
         mac = self.get_mac_by_instance(context, instance_id)
-        self.scheduler_rpcapi.create_traffic(context, ip[0], instance_id, band, host[0], mac[0], prio)
+        self.scheduler_rpcapi.create_traffic(context, ip.first()[0], instance_id, band, host[0], mac[0], prio)
         
     def show(self, context, instance_id):
         results = self.tqdisc_api.get_by_instance_id(context, instance_id)
