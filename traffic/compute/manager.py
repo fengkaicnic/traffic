@@ -283,6 +283,7 @@ class ComputeManager(manager.SchedulerDependentManager):
 
     def delete_traffic(self, context, instance_id, mac):
         self.tqdisc_api.delete(context, instance_id, mac)
+        self.tfilter_api.delete(context, instance_id)
 
     def _deallocate_network(self, context, instance):
         LOG.debug(_('Deallocating network for instance'), instance=instance)

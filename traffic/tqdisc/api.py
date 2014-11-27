@@ -33,8 +33,8 @@ class API(base.Base):
         etg = os.popen("tc qdisc list | grep 'qdisc htb 10: dev br100 root'")
         pclass = etg.read()
         if not pclass:
-            os.system('tc qdisc add dev eth0 root handle 10: htb default 10')
-            os.system('tc class add dev eth0 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit')
+            os.system('tc qdisc add dev br100 root handle 10: htb default 10')
+            os.system('tc class add dev br100 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit')
         classid = self.db.get_classid(context)
         if not classid:
             classid = '10:11'
@@ -45,7 +45,7 @@ class API(base.Base):
         new_id = int(classid.split(':')[1]) + 1
         new_class_id = '10:' + str(new_id)
         bands = band + 'Mbit'
-        cmd = ['tc class add dev eth0 parent 10:1 classid ', new_class_id, ' htb rate ', bands, ' prio ', str(prio)]
+        cmd = ['tc class add dev br100 parent 10:1 classid ', new_class_id, ' htb rate ', bands, ' prio ', str(prio)]
         self.db.tqdisc_create(context,
                               {'instanceid': instance_id,
                                'classid': new_class_id,
@@ -76,7 +76,7 @@ class API(base.Base):
         result = self.db.tqdisc_get_by_ip(context, ip)
         return result
     
-    def delete(self, context, instance_id, mac):
+    def delete_bk(self, context, instance_id, mac):
         mac = mac[3:]
         cmdlist = ["ifconfig | grep ", mac, " | awk \'{print $1}\'"]
         eht = os.popen("".join(cmdlist))
@@ -87,7 +87,7 @@ class API(base.Base):
         os.system(''.join(cmd))
         os.system(''.join(cmds))
         
-    def delete_bk(self, context, classid):
+    def delete(self, context, classid):
         
         cmd = ['tc class del dev eth0 classid ', classid]
         self._execute(cmd)
