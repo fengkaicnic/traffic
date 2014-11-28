@@ -34,7 +34,8 @@ class API(base.Base):
         tfilter = self.db.tfilter_get_by_instance(context, instanceid)
         handle_r = '800::' + str(tfilter[6])
         cmd = ['tc filter del dev eth0 parent 10: prio', tfilter[9], 'handle', handle_r]
-        self._execute(cmd)
+        os.system(''.join(cmd))
+#        self._execute(cmd)
         self.db.tfilter_delete_by_instance(context, instanceid)
     
     def get(self, context, class_id):

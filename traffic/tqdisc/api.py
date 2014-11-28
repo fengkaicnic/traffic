@@ -90,5 +90,6 @@ class API(base.Base):
     def delete(self, context, instanceid):
         classid = self.db.get_classid_by_instance(context, instanceid)
         cmd = ['tc class del dev eth0 classid ', classid[0]]
-        self._execute(cmd)
+        os.system(''.join(cmd))
+        #self._execute(cmd)
         self.db.tqdisc_delete(context, classid)
