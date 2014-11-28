@@ -27,6 +27,7 @@ class API(base.Base):
                                 'flowid': class_id, 
                                 'instanceid': instanceid,
                                 'handle': handle+1, 
+                                'host': host,
                                 'prio': prio})
         os.system(''.join(cmd))
         
