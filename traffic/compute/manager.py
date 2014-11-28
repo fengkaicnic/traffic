@@ -282,8 +282,8 @@ class ComputeManager(manager.SchedulerDependentManager):
         self.tfilter_api.create(context, ip, classid, instance_id)
 
     def delete_traffic(self, context, instance_id):
-        self.tqdisc_api.delete(context, instance_id)
         self.tfilter_api.delete(context, instance_id)
+        self.tqdisc_api.delete(context, instance_id)
 
     def _deallocate_network(self, context, instance):
         LOG.debug(_('Deallocating network for instance'), instance=instance)
