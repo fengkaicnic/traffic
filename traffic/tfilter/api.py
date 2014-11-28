@@ -25,7 +25,7 @@ class API(base.Base):
                                {'ip': ip, 
                                 'classid': class_id,
                                 'flowid': class_id, 
-                                'instance_id': instanceid,
+                                'instanceid': instanceid,
                                 'handle': handle+1, 
                                 'prio': prio})
         os.system(''.join(cmd))
