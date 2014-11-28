@@ -140,9 +140,9 @@ def tqdisc_delete_by_instanceid(context, instance_id):
 def get_host_by_instance_id(context, instance_id):
     return IMPL.get_host_by_instance_id(context, instance_id)
 
-def tfilter_get_last_handle(context):
+def tfilter_get_last_handle(context, host):
     'get a last handle of tfilter'
-    return IMPL.tfilter_get_last_handle(context)
+    return IMPL.tfilter_get_last_handle(context, host)
 
 def tfilter_create(context, values):
     'create a tfilter'

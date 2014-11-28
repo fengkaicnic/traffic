@@ -153,6 +153,7 @@ class Tfilter(BASE, TrafficBase):
     __tablename__ = 'tfilter'
     id = Column(Integer, primary_key=True)
     classid = Column(String(50))
+    host = Column(String(50))
     handle = Column(Integer)
     ip = Column(String(255))
     instanceid= Column(String(50))
