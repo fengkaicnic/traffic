@@ -9,7 +9,7 @@ import optparse
 import os
 import sys
 
-
+from gettext import gettext
 from traffic.compute import rpcapi as compute_rpcapi
 from traffic import context
 from traffic import db
@@ -24,6 +24,8 @@ from traffic.openstack.common import timeutils
 from traffic.scheduler import rpcapi as scheduler_rpcapi
 from traffic import utils
 from traffic import version
+
+_ = gettext
 
 FLAGS = flags.FLAGS
 
