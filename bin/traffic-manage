@@ -47,8 +47,39 @@ def _db_error(caught_exception):
     print caught_exception
     print _("The above error may show that the database has not "
             "been created.\nPlease create a database using "
-            "'nova-manage db sync' before running this command.")
+            "'traffic-manage db sync' before running this command.")
     exit(1)
+    
+class DbCommands(object):
+    """Class for managing the database."""
+
+    def __init__(self):
+        pass
+
+    @args('--version', dest='version', metavar='<version>',
+            help='Database version')
+    def sync(self, version=None):
+        """Sync the database up to the most recent version."""
+        return migration.db_sync(version)
+
+    def version(self):
+        """Print the current database version."""
+        print migration.db_version()
+
+
+class VersionCommands(object):
+    """Class for exposing the codebase version."""
+
+    def __init__(self):
+        pass
+
+    def list(self):
+        print (_("%(version)s (%(vcs)s)") %
+               {'version': version.version_string(),
+                'vcs': version.version_string_with_vcs()})
+
+    def __call__(self):
+        self.list()
     
 CATEGORIES = [
     ('db', DbCommands),
@@ -84,43 +115,12 @@ def methods_of(obj):
             result.append((i, getattr(obj, i)))
     return result
 
-class DbCommands(object):
-    """Class for managing the database."""
-
-    def __init__(self):
-        pass
-
-    @args('--version', dest='version', metavar='<version>',
-            help='Database version')
-    def sync(self, version=None):
-        """Sync the database up to the most recent version."""
-        return migration.db_sync(version)
-
-    def version(self):
-        """Print the current database version."""
-        print migration.db_version()
-
-
-class VersionCommands(object):
-    """Class for exposing the codebase version."""
-
-    def __init__(self):
-        pass
-
-    def list(self):
-        print (_("%(version)s (%(vcs)s)") %
-               {'version': version.version_string(),
-                'vcs': version.version_string_with_vcs()})
-
-    def __call__(self):
-        self.list()
-
 def main():
     """Parse options and call the appropriate class/method."""
 
     try:
         argv = flags.parse_args(sys.argv)
-        logging.setup("nova")
+        logging.setup("traffic")
     except cfg.ConfigFilesNotFoundError:
         cfgfile = FLAGS.config_file[-1] if FLAGS.config_file else None
         if cfgfile and not os.access(cfgfile, os.R_OK):
@@ -131,12 +131,12 @@ def main():
             except Exception:
                 print _('sudo failed, continuing as if nothing happened')
 
-        print _('Please re-run nova-manage as root.')
+        print _('Please re-run traffic-manage as root.')
         sys.exit(2)
 
     script_name = argv.pop(0)
     if len(argv) < 1:
-        print (_("\nOpenStack Nova version: %(version)s (%(vcs)s)\n") %
+        print (_("\nOpenStack Traffic version: %(version)s (%(vcs)s)\n") %
                {'version': version.version_string(),
                 'vcs': version.version_string_with_vcs()})
         print script_name + " category action [<args>]"
