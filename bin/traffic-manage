@@ -1,0 +1,223 @@
+#!/usr/bin/python
+
+import ast
+import errno
+import gettext
+import math
+import netaddr
+import optparse
+import os
+import sys
+
+
+from traffic.compute import rpcapi as compute_rpcapi
+from traffic import context
+from traffic import db
+from traffic.db import migration
+from traffic import exception
+from traffic import flags
+from traffic.openstack.common import cfg
+from traffic.openstack.common import importutils
+from traffic.openstack.common import log as logging
+from traffic.openstack.common import rpc
+from traffic.openstack.common import timeutils
+from traffic.scheduler import rpcapi as scheduler_rpcapi
+from traffic import utils
+from traffic import version
+
+FLAGS = flags.FLAGS
+flags.DECLARE('flat_network_bridge', 'traffic.network.manager')
+flags.DECLARE('num_networks', 'traffic.network.manager')
+flags.DECLARE('multi_host', 'traffic.network.manager')
+flags.DECLARE('network_size', 'traffic.network.manager')
+flags.DECLARE('vlan_start', 'traffic.network.manager')
+flags.DECLARE('vpn_start', 'traffic.network.manager')
+flags.DECLARE('default_floating_pool', 'traffic.network.manager')
+flags.DECLARE('public_interface', 'traffic.network.linux_net')
+
+# Decorators for actions
+def args(*args, **kwargs):
+    def _decorator(func):
+        func.__dict__.setdefault('options', []).insert(0, (args, kwargs))
+        return func
+    return _decorator
+
+def param2id(object_id):
+    """Helper function to convert various volume id types to internal id.
+    args: [object_id], e.g. 'vol-0000000a' or 'volume-0000000a' or '10'
+    """
+    if '-' in object_id:
+        return ec2utils.ec2_vol_id_to_uuid(object_id)
+    else:
+        return object_id
+    
+def _db_error(caught_exception):
+    print caught_exception
+    print _("The above error may show that the database has not "
+            "been created.\nPlease create a database using "
+            "'nova-manage db sync' before running this command.")
+    exit(1)
+    
+CATEGORIES = [
+    ('db', DbCommands),
+    ('version', VersionCommands),
+]    
+
+def lazy_match(name, key_value_tuples):
+    """Finds all objects that have a key that case insensitively contains
+    [name] key_value_tuples is a list of tuples of the form (key, value)
+    returns a list of tuples of the form (key, value)"""
+    result = []
+    for (k, v) in key_value_tuples:
+        if k.lower().find(name.lower()) == 0:
+            result.append((k, v))
+    if len(result) == 0:
+        print "%s does not match any options:" % name
+        for k, _v in key_value_tuples:
+            print "\t%s" % k
+        sys.exit(2)
+    if len(result) > 1:
+        print "%s matched multiple options:" % name
+        for k, _v in result:
+            print "\t%s" % k
+        sys.exit(2)
+    return result
+
+def methods_of(obj):
+    """Get all callable methods of an object that don't start with underscore
+    returns a list of tuples of the form (method_name, method)"""
+    result = []
+    for i in dir(obj):
+        if callable(getattr(obj, i)) and not i.startswith('_'):
+            result.append((i, getattr(obj, i)))
+    return result
+
+class DbCommands(object):
+    """Class for managing the database."""
+
+    def __init__(self):
+        pass
+
+    @args('--version', dest='version', metavar='<version>',
+            help='Database version')
+    def sync(self, version=None):
+        """Sync the database up to the most recent version."""
+        return migration.db_sync(version)
+
+    def version(self):
+        """Print the current database version."""
+        print migration.db_version()
+
+
+class VersionCommands(object):
+    """Class for exposing the codebase version."""
+
+    def __init__(self):
+        pass
+
+    def list(self):
+        print (_("%(version)s (%(vcs)s)") %
+               {'version': version.version_string(),
+                'vcs': version.version_string_with_vcs()})
+
+    def __call__(self):
+        self.list()
+
+def main():
+    """Parse options and call the appropriate class/method."""
+
+    try:
+        argv = flags.parse_args(sys.argv)
+        logging.setup("nova")
+    except cfg.ConfigFilesNotFoundError:
+        cfgfile = FLAGS.config_file[-1] if FLAGS.config_file else None
+        if cfgfile and not os.access(cfgfile, os.R_OK):
+            st = os.stat(cfgfile)
+            print _("Could not read %s. Re-running with sudo") % cfgfile
+            try:
+                os.execvp('sudo', ['sudo', '-u', '#%s' % st.st_uid] + sys.argv)
+            except Exception:
+                print _('sudo failed, continuing as if nothing happened')
+
+        print _('Please re-run nova-manage as root.')
+        sys.exit(2)
+
+    script_name = argv.pop(0)
+    if len(argv) < 1:
+        print (_("\nOpenStack Nova version: %(version)s (%(vcs)s)\n") %
+               {'version': version.version_string(),
+                'vcs': version.version_string_with_vcs()})
+        print script_name + " category action [<args>]"
+        print _("Available categories:")
+        for k, _v in CATEGORIES:
+            print "\t%s" % k
+        sys.exit(2)
+    category = argv.pop(0)
+    if category == "bash-completion":
+        if len(argv) < 1:
+            print " ".join([k for (k, v) in CATEGORIES])
+        else:
+            query_category = argv.pop(0)
+            matches = lazy_match(query_category, CATEGORIES)
+            # instantiate the command group object
+            category, fn = matches[0]
+            command_object = fn()
+            actions = methods_of(command_object)
+            print " ".join([k for (k, v) in actions])
+        sys.exit(0)
+    matches = lazy_match(category, CATEGORIES)
+    # instantiate the command group object
+    category, fn = matches[0]
+    command_object = fn()
+    actions = methods_of(command_object)
+    if len(argv) < 1:
+        if hasattr(command_object, '__call__'):
+            action = ''
+            fn = command_object.__call__
+        else:
+            print script_name + " category action [<args>]"
+            print _("Available actions for %s category:") % category
+            for k, _v in actions:
+                print "\t%s" % k
+            sys.exit(2)
+    else:
+        action = argv.pop(0)
+        matches = lazy_match(action, actions)
+        action, fn = matches[0]
+
+    # For not decorated methods
+    options = getattr(fn, 'options', [])
+
+    usage = "%%prog %s %s <args> [options]" % (category, action)
+    parser = optparse.OptionParser(usage=usage)
+    for ar, kw in options:
+        parser.add_option(*ar, **kw)
+    (opts, fn_args) = parser.parse_args(argv)
+    fn_kwargs = vars(opts)
+
+    for k, v in fn_kwargs.items():
+        if v is None:
+            del fn_kwargs[k]
+        elif isinstance(v, basestring):
+            fn_kwargs[k] = v.decode('utf-8')
+        else:
+            fn_kwargs[k] = v
+
+    fn_args = [arg.decode('utf-8') for arg in fn_args]
+
+    # call the action with the remaining arguments
+    try:
+        fn(*fn_args, **fn_kwargs)
+        rpc.cleanup()
+        sys.exit(0)
+    except TypeError:
+        print _("Possible wrong number of arguments supplied")
+        print fn.__doc__
+        parser.print_help()
+        raise
+    except Exception:
+        print _("Command failed, please check log for more info")
+        raise
+
+if __name__ == '__main__':
+    main()
