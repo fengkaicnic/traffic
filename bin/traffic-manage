@@ -26,14 +26,6 @@ from traffic import utils
 from traffic import version
 
 FLAGS = flags.FLAGS
-flags.DECLARE('flat_network_bridge', 'traffic.network.manager')
-flags.DECLARE('num_networks', 'traffic.network.manager')
-flags.DECLARE('multi_host', 'traffic.network.manager')
-flags.DECLARE('network_size', 'traffic.network.manager')
-flags.DECLARE('vlan_start', 'traffic.network.manager')
-flags.DECLARE('vpn_start', 'traffic.network.manager')
-flags.DECLARE('default_floating_pool', 'traffic.network.manager')
-flags.DECLARE('public_interface', 'traffic.network.linux_net')
 
 # Decorators for actions
 def args(*args, **kwargs):
