@@ -71,7 +71,7 @@ def db_sync(version=None):
         try:
             version = int(version)
         except ValueError:
-            raise exception.trafficException(_("version should be an integer"))
+            raise exception.TrafficException(_("version should be an integer"))
 
     current_version = db_version()
     repository = _find_migrate_repo()
@@ -97,7 +97,7 @@ def db_version():
         else:
             # Some pre-Essex DB's may not be version controlled.
             # Require them to upgrade using Essex first.
-            raise exception.trafficException(
+            raise exception.TrafficException(
                 _("Upgrade DB using Essex release first."))
 
 
