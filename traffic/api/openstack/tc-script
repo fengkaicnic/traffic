@@ -1,0 +1,8 @@
+tc qdisc add dev eth0 root handle 10: htb default 10
+tc class add dev eth0 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit
+tc class add dev eth0 parent 10:1 classid 10:11 htb rate 10Mbit prio 1
+tc class add dev eth0 parent 10:1 classid 10:12 htb rate 20Mbit prio 2
+tc filter add dev eth0 parent 10: protocol ip prio 1 u32 match ip src 10.0.64.251/32 flowid 10:11
+tc filter add dev eth0 parent 10: protocol ip prio 1 u32 match ip src 10.0.64.252/32 flowid 10:12
+tc filter del dev eth0 parent 10: prio 1 handle 800::801 u32
+tc class del dev eth0 classid 10:5
