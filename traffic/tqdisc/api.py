@@ -45,8 +45,7 @@ class API(base.Base):
         etg = os.popen("tc qdisc list | grep 'qdisc htb 10: dev br100 root'")
         pclass = etg.read()
         interface = FLAGS.interface
-        
-        print interface
+
         if not pclass:
             os.system('tc qdisc add dev ', interface, ' root handle 10: htb default 10')
             os.system('tc class add dev br100 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit')
@@ -69,7 +68,6 @@ class API(base.Base):
                                'ip': ip,
                                'band': bands})
 #        self._execute('tc class add dev eth0 parent 10:1 classid', new_class_id, 'htb rate', bands, 'prio', prio)
-        print ''.join(cmd)
         os.system(''.join(cmd))
         return new_class_id
         
@@ -107,7 +105,6 @@ class API(base.Base):
         classid = self.db.get_classid_by_instance(context, instanceid)
         interface = FLAGS.interface
         cmd = ['tc class del dev ', interface, ' classid ', classid[0]]
-        print ''.join(cmd)
         os.system(''.join(cmd))
         #self._execute(cmd)
         self.db.tqdisc_delete_by_instanceid(context, instanceid)
