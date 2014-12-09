@@ -25,7 +25,7 @@ class API(base.Base):
     def create(self, context, ip, class_id, instanceid, host, prio=1):
         interface = FLAGS.interface
         ips = ip + '/32'
-        cmd = ['tc filter add dev br100 parent 10: protocol ip prio ', prio ,' u32 match ip src ', ips, ' flowid ', class_id]
+        cmd = ['tc filter add dev ', interface, ' parent 10: protocol ip prio ', prio ,' u32 match ip src ', ips, ' flowid ', class_id]
         cmd = map(str, cmd)
         #self._execute(cmd)
         
@@ -51,7 +51,7 @@ class API(base.Base):
         interface = FLAGS.interface
         print interface
         handle_r = '800::' + str(tfilter[8])
-        cmd = ['tc filter del dev br100 parent 10: prio ', tfilter[11], ' handle ', handle_r, ' u32']
+        cmd = ['tc filter del dev ', interface, ' parent 10: prio ', tfilter[11], ' handle ', handle_r, ' u32']
         cmd = map(str, cmd)
         print ''.join(cmd)
         os.system(''.join(cmd))

@@ -48,7 +48,7 @@ class API(base.Base):
         
         print interface
         if not pclass:
-            os.system('tc qdisc add dev br100 root handle 10: htb default 10')
+            os.system('tc qdisc add dev ', interface, ' root handle 10: htb default 10')
             os.system('tc class add dev br100 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit')
         classid = self.db.get_classid(context)
         if not classid:
@@ -106,7 +106,7 @@ class API(base.Base):
     def delete(self, context, instanceid):
         classid = self.db.get_classid_by_instance(context, instanceid)
         interface = FLAGS.interface
-        cmd = ['tc class del dev br100 classid ', classid[0]]
+        cmd = ['tc class del dev ', interface, ' classid ', classid[0]]
         print ''.join(cmd)
         os.system(''.join(cmd))
         #self._execute(cmd)
