@@ -2,8 +2,11 @@
 from traffic import rootwrap
 from traffic import utils
 from traffic import db
+from traffic import flags
 from traffic.db import base
 import os
+
+FLAGS = flags.FLAGS
 
 class API(base.Base):
     
@@ -11,6 +14,7 @@ class API(base.Base):
         self._execute = execute
         
     def create(self, context, ip, class_id, instanceid, host, prio=1):
+        interface = FLAGS.interface
         ips = ip + '/32'
         cmd = ['tc filter add dev br100 parent 10: protocol ip prio ', prio ,' u32 match ip src ', ips, ' flowid ', class_id]
         cmd = map(str, cmd)
@@ -33,6 +37,7 @@ class API(base.Base):
         
     def delete(self, context, instanceid):       
         tfilter = self.db.tfilter_get_by_instance(context, instanceid)
+        interface = FLAGS.interface
         handle_r = '800::' + str(tfilter[6])
         cmd = ['tc filter del dev br100 parent 10: prio ', tfilter[11], ' handle ', handle_r, ' u32']
         cmd = map(str, cmd)

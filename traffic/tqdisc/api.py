@@ -3,7 +3,10 @@ from traffic import flags
 from traffic import utils
 from traffic import rootwrap
 from traffic.db import base
+from traffic import flags
 import os
+
+FLAGS = flags.FLAGS
 
 class API(base.Base):
     
@@ -32,6 +35,7 @@ class API(base.Base):
     def create(self, context, instance_id, band, host, ip, mac, prio=1):
         etg = os.popen("tc qdisc list | grep 'qdisc htb 10: dev br100 root'")
         pclass = etg.read()
+        interface = FLAGS.interface
         if not pclass:
             os.system('tc qdisc add dev br100 root handle 10: htb default 10')
             os.system('tc class add dev br100 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit')
@@ -89,6 +93,7 @@ class API(base.Base):
         
     def delete(self, context, instanceid):
         classid = self.db.get_classid_by_instance(context, instanceid)
+        interface = FLAGS.interface
         cmd = ['tc class del dev br100 classid ', classid[0]]
         os.system(''.join(cmd))
         #self._execute(cmd)
