@@ -1,12 +1,21 @@
 
 from traffic import flags
+from traffic.openstack.common import cfg
 from traffic import utils
 from traffic import rootwrap
 from traffic.db import base
 from traffic import flags
 import os
 
+traffic_opts = [
+    cfg.StrOpt('interface',
+               default='eth0',
+               help="the interface of the vm"),
+    ]
+
+
 FLAGS = flags.FLAGS
+FLAGS.register_opts(traffic_opts)
 
 class API(base.Base):
     
