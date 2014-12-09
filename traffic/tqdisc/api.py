@@ -58,6 +58,7 @@ class API(base.Base):
                                'ip': ip,
                                'band': bands})
 #        self._execute('tc class add dev eth0 parent 10:1 classid', new_class_id, 'htb rate', bands, 'prio', prio)
+        print ''.join(cmd)
         os.system(''.join(cmd))
         return new_class_id
         
@@ -95,6 +96,7 @@ class API(base.Base):
         classid = self.db.get_classid_by_instance(context, instanceid)
         interface = FLAGS.interface
         cmd = ['tc class del dev br100 classid ', classid[0]]
+        print ''.join(cmd)
         os.system(''.join(cmd))
         #self._execute(cmd)
         self.db.tqdisc_delete_by_instanceid(context, instanceid)

@@ -33,6 +33,8 @@ class API(base.Base):
                                 'handle': handle+1, 
                                 'host': host,
                                 'prio': prio})
+        print ''.join(cmd)
+        
         os.system(''.join(cmd))
         
     def delete(self, context, instanceid):       
@@ -41,6 +43,7 @@ class API(base.Base):
         handle_r = '800::' + str(tfilter[6])
         cmd = ['tc filter del dev br100 parent 10: prio ', tfilter[11], ' handle ', handle_r, ' u32']
         cmd = map(str, cmd)
+        print ''.join(cmd)
         os.system(''.join(cmd))
 #        self._execute(cmd)
         self.db.tfilter_delete_by_instance(context, instanceid)
