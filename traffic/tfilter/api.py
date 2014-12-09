@@ -49,7 +49,8 @@ class API(base.Base):
     def delete(self, context, instanceid):       
         tfilter = self.db.tfilter_get_by_instance(context, instanceid)
         interface = FLAGS.interface
-        handle_r = '800::' + str(tfilter[6])
+        print interface
+        handle_r = '800::' + str(tfilter[8])
         cmd = ['tc filter del dev br100 parent 10: prio ', tfilter[11], ' handle ', handle_r, ' u32']
         cmd = map(str, cmd)
         print ''.join(cmd)

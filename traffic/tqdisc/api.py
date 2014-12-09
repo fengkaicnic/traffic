@@ -45,6 +45,8 @@ class API(base.Base):
         etg = os.popen("tc qdisc list | grep 'qdisc htb 10: dev br100 root'")
         pclass = etg.read()
         interface = FLAGS.interface
+        
+        print interface
         if not pclass:
             os.system('tc qdisc add dev br100 root handle 10: htb default 10')
             os.system('tc class add dev br100 parent 10: classid 10:1 htb rate 1000Mbit ceil 1000Mbit')
